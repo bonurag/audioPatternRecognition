@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import os
 import soundfile as sf
 
-DATASET_PATH = "test"
+DATASET_PATH = 'genres'
 SAMPLE_RATE = 22050
 STRETCH_FACTOR = 0.8
 NOISE_FACTOR = 0.009
 SHIFT_FACTOR = int(SAMPLE_RATE / 10)
 FILE_EXTENSION = '.wav'
-
+LOG_ENABLE = False
 
 class AudioAugmentation:
     def read_audio_file(self, file_path):
@@ -49,29 +49,43 @@ def save_augment_data(dataset_path):
     for i, (dirpath, dirname, filenames) in enumerate(os.walk(dataset_path)):
         # ensure that we're not at the root level
         if dirpath is not dataset_path:
+            if LOG_ENABLE:
+                print('dirpath: ', dirpath)
+                print('dirname: ', dirname)
+                print('filenames: ', filenames)
 
             # save the semantic label in mapping label inside JSON
             dirpath_component = dirpath.split('/')  # return a list of element
             dirpath_root = dirpath_component[-1].split('\\')[0]
             semantic_label = dirpath_component[-1].split('\\')[1]
-            # print('dirpath_root: ', dirpath_root)
-            # print('dirpath_component: ', dirpath_component)
-            # print('semantic_label: ', semantic_label)
+            if LOG_ENABLE:
+                print('dirpath_root: ', dirpath_root)
+                print('dirpath_component: ', dirpath_component)
+                print('semantic_label: ', semantic_label)
+
             # process files for a specific genre
             for f in filenames:  # filenames represent only the file name and not the full path
+                if LOG_ENABLE:
+                    print('f: ', f)
 
                 # load audio file
                 file_path = os.path.join(dirpath, f)
+                if LOG_ENABLE:
+                    print('file_path: ', file_path)
+                    print('file_path isfile: ', os.path.isfile(file_path))
+
                 file_component = file_path.split('/')  # return a list of element
                 file_name = file_component[-1].split('\\')[2][:-4]
-                print('file_component: ', file_component)
-                print('file_name: ', file_name)
+                if LOG_ENABLE:
+                    print('file_component: ', file_component)
+                    print('file_name: ', file_name)
 
                 # Create a new instance from AudioAugmentation class
                 audioaug = AudioAugmentation()
                 # Read and show cat sound
                 data, sr = audioaug.read_audio_file(file_path)
-                # print("Song:{}, Data:{} - DataLen:{} - Sample Rate:{}".format(file_path, data, len(data), sr))
+                if LOG_ENABLE:
+                    print("Song:{}, Data:{} - DataLen:{} - Sample Rate:{}".format(file_path, data, len(data), sr))
                 # audioAug.plot_time_series(data)
 
                 # Adding noise to sound
@@ -87,12 +101,19 @@ def save_augment_data(dataset_path):
                 # audioaug.plot_time_series(data_stretch)
 
                 # Write generated cat sounds
-                output_path = str(dirpath_root) + '/' + str(semantic_label) + '/' + file_name
-                # print('output_path: ', output_path)
+                output_path_noise = str(dirpath_root) + '/' + str(semantic_label) + '/' + file_name + '.Noise' + FILE_EXTENSION
+                if LOG_ENABLE:
+                    print('output_path_noise: ', output_path_noise)
+                output_path_roll = str(dirpath_root) + '/' + str(semantic_label) + '/' + file_name + '.Roll' + FILE_EXTENSION
+                if LOG_ENABLE:
+                    print('output_path_roll: ', output_path_roll)
+                output_path_stretch = str(dirpath_root) + '/' + str(semantic_label) + '/' + file_name + '.Stretch' + FILE_EXTENSION
+                if LOG_ENABLE:
+                    print('output_path_stretch: ', output_path_stretch)
 
-                audioaug.write_audio_file(output_path + '.Noise' + FILE_EXTENSION, data_noise)
-                audioaug.write_audio_file(output_path + '.Roll' + FILE_EXTENSION, data_roll)
-                audioaug.write_audio_file(output_path + '.Stretch' + FILE_EXTENSION, data_stretch)
+                audioaug.write_audio_file(output_path_noise, data_noise)
+                audioaug.write_audio_file(output_path_roll, data_roll)
+                audioaug.write_audio_file(output_path_stretch, data_stretch)
 
 
 if __name__ == "__main__":

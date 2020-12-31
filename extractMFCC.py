@@ -3,7 +3,7 @@ import librosa
 import math
 import json
 
-DATASET_PATH = "test"
+DATASET_PATH = "genres"
 JSON_PATH = "features_json/DataSet_13MFCC.json"
 SAMPLE_RATE = 22050
 DURATION = 30  # measured in seconds
