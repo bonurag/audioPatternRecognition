@@ -3,18 +3,26 @@ import librosa
 import math
 import json
 
-DATASET_PATH = "genres"
-JSON_PATH = "features_json/DataSet_13MFCC.json"
+DATASET_PATH = "test"
+NUM_MFCC = 13
+FRAME_SIZE = 2048
+HOP_SIZE = 512
+NUM_SEGMENT = 5
+
 SAMPLE_RATE = 22050
 DURATION = 30  # measured in seconds
 SAMPLE_PER_TRACK = SAMPLE_RATE * DURATION
+
 MONO = True
 
+JSON_PATH = "test/DataSet_" + str(NUM_MFCC) + "MFCC.json"
 
-def save_mfcc(dataset_path, json_path, num_mfcc=13, num_fft=2048, hop_length=512, num_segments=5):
+
+def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, hop_length=HOP_SIZE,
+              num_segments=NUM_SEGMENT):
     # dictionary to store data
     data = {
-        "mapping": [],  # list of musical genrse
+        "mapping": [],  # list of musical genres
         "mfcc": [],  # input data extract from audio sample
         "labels": []  # target label
     }
