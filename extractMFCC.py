@@ -1,9 +1,12 @@
 import os
 import librosa
+import librosa.display
 import math
 import json
+import matplotlib.pyplot as plt
+import numpy as np
 
-DATASET_PATH = "test"
+DATASET_PATH = "genres_V2"
 NUM_MFCC = 13
 FRAME_SIZE = 2048
 HOP_SIZE = 512
@@ -15,7 +18,7 @@ SAMPLE_PER_TRACK = SAMPLE_RATE * DURATION
 
 MONO = True
 
-JSON_PATH = "test/DataSet_" + str(NUM_MFCC) + "MFCC.json"
+JSON_PATH = "features_json/DataSet_" + str(NUM_MFCC) + "MFCC.json"
 
 
 def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, hop_length=HOP_SIZE,
@@ -30,12 +33,15 @@ def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, ho
     num_sample_per_segment = int(SAMPLE_PER_TRACK / num_segments)
     expected_mfcc_vectors_per_segments = math.ceil(num_sample_per_segment / hop_length)  # 1.2 -> 2 i would like to have an integer
 
+    excludeFolder = {"exclude"}
     # loop inside the folder that contains all data
     # dirpath represent the directory that contains all folder with genres
     # dirname represent the single folders per genres
     # filename represent the single audio sample in dirname
     # for count a number of iteration during the for i can insert enumerate and assign to i var
     for i, (dirpath, dirname, filenames) in enumerate(os.walk(dataset_path)):
+        dirname[:] = [d for d in dirname if d not in excludeFolder]
+
         # ensure that we're not at the root level
         if dirpath is not dataset_path:
 
@@ -57,7 +63,12 @@ def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, ho
                     start_sample = num_sample_per_segment * d
                     finish_sample = start_sample + num_sample_per_segment
 
-                    mfcc = librosa.feature.mfcc(signal[start_sample:finish_sample], sample_rate, n_mfcc=num_mfcc, n_fft=num_fft, hop_length=hop_length)
+                    mfcc = librosa.feature.mfcc(signal[start_sample:finish_sample], sr=sample_rate, n_mfcc=num_mfcc, n_fft=num_fft, hop_length=hop_length)
+                    print("MFCCs Shape: {}".format(mfcc.shape))
+                    # plt.figure(figsize=(25, 10))
+                    # librosa.display.specshow(mfcc, x_axis="time", sr=sample_rate)
+                    # plt.colorbar(format="%+2.f")
+                    # plt.show()
                     mfcc = mfcc.T
 
                     # store mfcc for segment if it has the expected length
