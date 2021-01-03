@@ -33,14 +33,14 @@ def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, ho
     num_sample_per_segment = int(SAMPLE_PER_TRACK / num_segments)
     expected_mfcc_vectors_per_segments = math.ceil(num_sample_per_segment / hop_length)  # 1.2 -> 2 i would like to have an integer
 
-    excludeFolder = {"exclude"}
+    exclude_folder = {"exclude"}
     # loop inside the folder that contains all data
     # dirpath represent the directory that contains all folder with genres
     # dirname represent the single folders per genres
     # filename represent the single audio sample in dirname
     # for count a number of iteration during the for i can insert enumerate and assign to i var
     for i, (dirpath, dirname, filenames) in enumerate(os.walk(dataset_path)):
-        dirname[:] = [d for d in dirname if d not in excludeFolder]
+        dirname[:] = [d for d in dirname if d not in exclude_folder]
 
         # ensure that we're not at the root level
         if dirpath is not dataset_path:
@@ -64,7 +64,7 @@ def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, ho
                     finish_sample = start_sample + num_sample_per_segment
 
                     mfcc = librosa.feature.mfcc(signal[start_sample:finish_sample], sr=sample_rate, n_mfcc=num_mfcc, n_fft=num_fft, hop_length=hop_length)
-                    print("MFCCs Shape: {}".format(mfcc.shape))
+                    # print("MFCCs Shape: {}".format(mfcc.shape))
                     # plt.figure(figsize=(25, 10))
                     # librosa.display.specshow(mfcc, x_axis="time", sr=sample_rate)
                     # plt.colorbar(format="%+2.f")

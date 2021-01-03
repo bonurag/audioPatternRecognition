@@ -5,7 +5,7 @@ import tqdm.notebook
 import pandas as pd
 
 # create a csv file from data
-DATASET_PATH = "genres"
+DATASET_PATH = "test_1"
 NUM_MFCC = 40
 
 genre = os.listdir(DATASET_PATH)

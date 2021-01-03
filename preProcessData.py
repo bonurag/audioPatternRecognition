@@ -8,10 +8,10 @@ DATASET_PATH = 'genres_V2'
 FILE_EXTENSION = 'mp3'
 CHUNK_LENGTH = 30000
 
-excludeFolder = {"source"}
+exclude_folder = {"source"}
 
 for i, (dirpath, dirname, filenames) in enumerate(os.walk(DATASET_PATH, topdown=True)):
-    dirname[:] = [d for d in dirname if d not in excludeFolder]
+    dirname[:] = [d for d in dirname if d not in exclude_folder]
 
     # ensure that we're not at the root level
     if dirpath is not DATASET_PATH:
