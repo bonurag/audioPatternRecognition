@@ -100,19 +100,14 @@ def getCorrelatedFeatures(inputData, corrValue=0.9, dropFeatures=True, plotMatri
             plot_correlation_matrix(drop_correlation_matrix, savePlot, fileName)
 
 
-def plot_PCA(inputData, savePlot=False, target_names=[], fileName='Default File Name', numGenres=10):
+def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default File Name'):
     plt.figure(figsize=(20, 10))
-    # genre = inputData
-    # genres = target_names
-    # genre['genre'].replace(
-    #     {0: genres[0], 1: genres[1], 2: genres[2], 3: genres[3], 4: genres[4], 5: genres[5], 6: genres[6], 7: genres[7],
-    #      8: genres[8], 9: genres[9]}, inplace=True)
-    new_data = inputData.copy()
+    new_data = inputPCAData.copy()
     genres = target_names
-    if numGenres == 10:
+    if len(target_names) == 10:
         genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
                   8: 'reggae', 9: 'rock'}
-    elif numGenres == 5:
+    elif len(target_names) == 5:
         genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
 
     new_data.genre = [genres[item] for item in new_data.genre]
@@ -142,7 +137,7 @@ def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot
     concatData = pd.concat([principalDf, inputColumns], axis=1)
 
     if plotMatrix:
-        plot_PCA(concatData, savePlot, target_names, fileName, len(target_names))
+        plot_PCA(concatData, savePlot, target_names, fileName)
     return concatData
 
 
