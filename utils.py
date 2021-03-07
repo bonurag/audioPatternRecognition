@@ -1,10 +1,12 @@
 import os
 import random
 import shutil
-
+import seaborn as sns
+import pandas as pd
 import matplotlib.pyplot as plt
 
-DATASET_PATH = 'genres_V2'
+DATASET_PATH = 'genres_collections_new_small'
+FILE_PATH = 'feature_csv/13MFCC_5000_5GEN.csv'
 folder = []
 fileSize = []
 
@@ -66,7 +68,7 @@ def random_mover(current_path):
                 file_path = os.path.join(dirpath, f)
                 list_files.append(file_path)
 
-            files_to_move = [list_files.pop(random.randrange(0, len(list_files))) for _ in range(300)]
+            files_to_move = [list_files.pop(random.randrange(0, len(list_files))) for _ in range(500)]
 
             for j in range(len(files_to_move)):
                 print("files_to_move {} - {}".format(j, files_to_move))
@@ -92,9 +94,16 @@ def random_mover(current_path):
                     shutil.move(current_file, output_path + '/' + file_name)
 
 
+def feature_cluster(current_path):
+    data = pd.read_csv(current_path)
+    sns.pairplot(data, hue='genre')
+    plt.show()
+
+
 if __name__ == "__main__":
-    X_LABEL = 'Number of Samples'
-    GRAPH_TITLE = 'Genres Vs. Samples Distribution'
-    numGenres, numSamples = get_file_folder(DATASET_PATH)
-    get_horizontal_historgram(numGenres, numSamples, X_LABEL, GRAPH_TITLE, 10, 7)
-    random_mover(DATASET_PATH)
+    # X_LABEL = 'Number of Samples'
+    # GRAPH_TITLE = 'Genres Vs. Samples Distribution'
+    # numGenres, numSamples = get_file_folder(DATASET_PATH)
+    # get_horizontal_historgram(numGenres, numSamples, X_LABEL, GRAPH_TITLE, 10, 7)
+    # random_mover(DATASET_PATH)
+    feature_cluster(FILE_PATH)

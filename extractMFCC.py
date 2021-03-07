@@ -6,19 +6,19 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-DATASET_PATH = "genres_V2"
-NUM_MFCC = 13
+DATASET_PATH = "Single_Track"
+NUM_MFCC = 64
 FRAME_SIZE = 2048
 HOP_SIZE = 512
 NUM_SEGMENT = 5
 
 SAMPLE_RATE = 22050
-DURATION = 30  # measured in seconds
+DURATION = 3  # measured in seconds
 SAMPLE_PER_TRACK = SAMPLE_RATE * DURATION
 
 MONO = True
 
-JSON_PATH = "features_json/DataSet_" + str(NUM_MFCC) + "MFCC.json"
+JSON_PATH = "Single_Track/DataSet_" + str(NUM_MFCC) + "MFCC.json"
 
 
 def save_mfcc(dataset_path, json_path, num_mfcc=NUM_MFCC, num_fft=FRAME_SIZE, hop_length=HOP_SIZE,

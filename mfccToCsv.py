@@ -5,13 +5,14 @@ import tqdm.notebook
 import pandas as pd
 
 # create a csv file from data
-DATASET_PATH = "test_1"
+DATASET_PATH = "genres_5"
 NUM_MFCC = 40
 
 genre = os.listdir(DATASET_PATH)
 data = pd.DataFrame(
-    columns=["filename", "genre", "path", "tempo", "rmse", "chroma_stft", "chroma_cqt", "chroma_cens", "spec_cent", "spec_bw", "rolloff", "zcr"] + [
-        "mfcc_{}".format(x) for x in range(NUM_MFCC)])
+    columns=["filename", "genre", "path", "tempo", "rmse", "chroma_stft", "chroma_cqt", "chroma_cens", "spec_cent",
+             "spec_bw", "rolloff", "zcr"] + [
+                "mfcc_{}".format(x) for x in range(NUM_MFCC)])
 
 filenames = []
 genres = []
@@ -47,5 +48,5 @@ for i, row in tqdm.notebook.tqdm(data.iterrows(), total=1000):
     for x, j in zip(librosa.feature.mfcc(audio, sr=sr, n_mfcc=NUM_MFCC)[:NUM_MFCC], range(NUM_MFCC)):
         row["mfcc_{}".format(j)] = np.mean(x)
 
-data.to_csv("GenreMusicFeaturesV3.csv")
+data.to_csv("genres" + str(NUM_MFCC) + ".csv")
 data.head()
