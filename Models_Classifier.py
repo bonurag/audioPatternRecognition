@@ -2,13 +2,21 @@ import apr_functions
 import os
 
 # genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-genre_target_names = ['classical', 'disco', 'jazz', 'reggae', 'rock']
+# genre_target_names = ['classical', 'disco', 'jazz', 'reggae', 'rock']
+genre_target_names = []
+
+features_file_path = 'genres_5'
 dataset_path = 'feature_csv/GTZAN 5 Generi/data/'
+
+for folder in os.listdir(os.path.join(features_file_path)):
+    genre_target_names.append(str(folder))
+
+print(genre_target_names)
 
 for file_name in os.listdir(os.path.join(dataset_path)):
     file_path = dataset_path+file_name
     image_file_name = file_name.replace('.csv', '')
-
+    print(file_path)
     # Load Data
     X, y, df = apr_functions.load_data(file_path, 'min_max')
 

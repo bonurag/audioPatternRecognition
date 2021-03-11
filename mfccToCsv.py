@@ -5,8 +5,8 @@ import tqdm.notebook
 import pandas as pd
 
 # create a csv file from data
-DATASET_PATH = "genres_5"
-NUM_MFCC = 20
+DATASET_PATH = "genres_10"
+NUM_MFCC = 40
 
 genre = os.listdir(DATASET_PATH)
 data = pd.DataFrame(
