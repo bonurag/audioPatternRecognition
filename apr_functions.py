@@ -22,8 +22,11 @@ from itertools import cycle
 genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 
-def load_data(data_path, normalization='std'):
+def load_data(data_path, normalization='std', columnsToDrop=[]):
     df = pd.read_csv(data_path)
+
+    if columnsToDrop:
+      df = df.drop(columns=columnsToDrop)
 
     ord_enc = preprocessing.OrdinalEncoder()
     df['genre'] = ord_enc.fit_transform(df[['genre']])
@@ -327,7 +330,7 @@ def getModel():
     ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
                                    hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
                                    random_state=1, activation='relu', learning_rate='adaptive', early_stopping=False,
-                                   verbose=False)
+                                   verbose=False, max_iter=2000)
     # ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(16,16), random_state=1,
     #                                activation='relu', learning_rate='adaptive', early_stopping=False, verbose=False)
     classifier_models.update({'ANN_Classifier': ANN_Classifier})
@@ -344,14 +347,15 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='De
             usePredictProba = True
         elif model_name == 'Random_Forest_Classifier' or model_name == 'ANN_Classifier':
             usePredictProba = False
+        image_file_name = model_name+'_'+fileName
         single_data_result = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test, True,
-                                          True, True, model_name, usePredictProba, target_names, fileName)
+                                          True, True, model_name, usePredictProba, target_names, image_file_name)
         all_models_results[model_name] = single_data_result
     print()
     print(f'CLASSIFICATION MODELS RESULTS:')
     rows, columns = dictionaryToDataFrame(all_models_results, columns_DataFrame)
-    result = pd.DataFrame(rows, columns=columns)
+    results = pd.DataFrame(rows, columns=columns)
 
     if exportCSV:
-        result.to_csv(fileName+'_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
-    return result
+        results.to_csv(fileName+'_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+    return results

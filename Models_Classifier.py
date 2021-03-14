@@ -5,8 +5,9 @@ import os
 # genre_target_names = ['classical', 'disco', 'jazz', 'reggae', 'rock']
 genre_target_names = []
 
-features_file_path = 'genres_5'
-dataset_path = 'feature_csv/GTZAN 5 Generi/data/'
+genres = '10'
+features_file_path = 'genres_'+genres
+dataset_path = 'feature_csv/GTZAN_'+genres+'_Genres/data/'
 
 for folder in os.listdir(os.path.join(features_file_path)):
     genre_target_names.append(str(folder))
@@ -14,9 +15,19 @@ for folder in os.listdir(os.path.join(features_file_path)):
 print(genre_target_names)
 
 for file_name in os.listdir(os.path.join(dataset_path)):
+    Time_Domain_Audio_Features = ['tempo', 'rmse', 'zcr']
+    Frequency_Domain_Audio_Features = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw',
+                                       'spec_contrast', 'rolloff']
     file_path = dataset_path+file_name
     image_file_name = file_name.replace('.csv', '')
     print(file_path)
+
+    mfcc_value = file_name[0:2]
+    print(mfcc_value)
+
+    for num_mfcc in range(int(mfcc_value)):
+        Frequency_Domain_Audio_Features.append('mfcc_' + str(num_mfcc))
+
     # Load Data
     X, y, df = apr_functions.load_data(file_path, 'min_max')
 
@@ -35,4 +46,5 @@ for file_name in os.listdir(os.path.join(dataset_path)):
     # Load Classifier Models
     load_models = apr_functions.getModel()
 
+    # Calculate classifier results
     finalData = apr_functions.getResults(load_models, X_train, X_test, y_train, y_test, image_file_name, True, genre_target_names)
