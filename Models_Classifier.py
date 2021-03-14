@@ -1,8 +1,6 @@
 import apr_functions
 import os
 
-# genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-# genre_target_names = ['classical', 'disco', 'jazz', 'reggae', 'rock']
 genre_target_names = []
 features_file_folder = ['GTZAN_5_Genres', 'GTZAN_5_Genres']
 
