@@ -16,6 +16,7 @@ for file_name in os.listdir(os.path.join(dataset_path)):
     Time_Domain_Audio_Features = ['tempo', 'energy', 'energy_entropy', 'rmse', 'zcr']
     Frequency_Domain_Audio_Features = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw',
                                        'spec_contrast', 'rolloff']
+
     file_path = dataset_path+file_name
     image_file_name = file_name.replace('.csv', '')
     print(file_path)
@@ -27,7 +28,7 @@ for file_name in os.listdir(os.path.join(dataset_path)):
         Frequency_Domain_Audio_Features.append('mfcc_' + str(num_mfcc))
 
     # Load Data
-    X, y, df = apr_functions.load_data(file_path, 'min_max', Time_Domain_Audio_Features)
+    X, y, df = apr_functions.load_data(file_path, 'min_max')
 
     # get train, validation, test splits
     X_train, X_test, y_train, y_test = apr_functions.prepare_datasets(X, y, 0.3)
