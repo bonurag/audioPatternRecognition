@@ -1,6 +1,7 @@
 import pandas as pd
 
 import time
+import json
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -267,7 +268,7 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
     single_metrics['single_results']['MAE'] = mae
     single_metrics['single_results']['EXEC_TIME'] = executionTime
 
-    clf_report = metrics.classification_report(y_test, y_pred, target_names=target_names)
+    clf_report = metrics.classification_report(y_test, y_pred, target_names=target_names, output_dict=True)
     return single_metrics, clf_report
 
 
@@ -303,7 +304,7 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     print(f'CLASSIFICATION REPORT:\n{report}')
     print('EXECUTION TIME: %s Sec' % executionTime)
     print()
-    return single_metrics
+    return single_metrics, report
 
 
 def dictionaryToDataFrame(inputData, columns):
@@ -315,32 +316,45 @@ def dictionaryToDataFrame(inputData, columns):
     return rows, columns
 
 
-def getModel():
+def getModel(test_Model=False):
     classifier_models = {'SVM_Classifier': [], 'Random_Forest_Classifier': [], 'ANN_Classifier': []}
 
-    # Linear Support Vector Machine
-    SVM_Classifier = SVC(C=100, kernel='rbf', probability=True, random_state=10)
-    # SVM_Classifier = SVC(C=10, kernel='rbf', probability=True, random_state=10)
-    classifier_models.update({'SVM_Classifier': SVM_Classifier})
-    # Random Forest
-    Random_Forest_Classifier = RandomForestClassifier(n_estimators=2000, random_state=10)
-    # Random_Forest_Classifier = RandomForestClassifier(n_estimators=10, random_state=10)
-    classifier_models.update({'Random_Forest_Classifier': Random_Forest_Classifier})
-    # Artificial Neural Network
-    ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
-                                   hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
-                                   random_state=1, activation='relu', learning_rate='adaptive', early_stopping=False,
-                                   verbose=False, max_iter=2000)
-    # ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(16,16), random_state=1,
-    #                                activation='relu', learning_rate='adaptive', early_stopping=False, verbose=False)
-    classifier_models.update({'ANN_Classifier': ANN_Classifier})
+    if test_Model:
+        # Linear Support Vector Machine
+        SVM_Classifier = SVC(C=10, kernel='rbf', probability=True, random_state=10)
+        classifier_models.update({'SVM_Classifier': SVM_Classifier})
 
+        # Random Forest
+        Random_Forest_Classifier = RandomForestClassifier(n_estimators=10, random_state=10)
+        classifier_models.update({'Random_Forest_Classifier': Random_Forest_Classifier})
+
+        # Artificial Neural Network
+        ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(16, 16), random_state=1,
+                                       activation='relu', learning_rate='adaptive', early_stopping=False, verbose=False)
+        classifier_models.update({'ANN_Classifier': ANN_Classifier})
+
+    else:
+        # Linear Support Vector Machine
+        SVM_Classifier = SVC(C=100, kernel='rbf', probability=True, random_state=10)
+        classifier_models.update({'SVM_Classifier': SVM_Classifier})
+
+        # Random Forest
+        Random_Forest_Classifier = RandomForestClassifier(n_estimators=2000, random_state=10)
+        classifier_models.update({'Random_Forest_Classifier': Random_Forest_Classifier})
+
+        # Artificial Neural Network
+        ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
+                                       hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
+                                       random_state=1, activation='relu', learning_rate='adaptive', early_stopping=False,
+                                       verbose=False, max_iter=2000)
+        classifier_models.update({'ANN_Classifier': ANN_Classifier})
     return classifier_models
 
 
-def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True, target_names=[]):
+def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True, exportJSON=True, target_names=[]):
     columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'EXEC_TIME']
     all_models_results = {}
+    all_models_reports = {}
     for key in classifier_models.keys():
         model_name = key
         if model_name == 'SVM_Classifier':
@@ -348,14 +362,23 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='De
         elif model_name == 'Random_Forest_Classifier' or model_name == 'ANN_Classifier':
             usePredictProba = False
         image_file_name = model_name+'_'+fileName
-        single_data_result = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test, True,
+        single_data_result, report = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test, True,
                                           True, True, model_name, usePredictProba, target_names, image_file_name)
         all_models_results[model_name] = single_data_result
+        all_models_reports[model_name] = report
     print()
     print(f'CLASSIFICATION MODELS RESULTS:')
     rows, columns = dictionaryToDataFrame(all_models_results, columns_DataFrame)
-    results = pd.DataFrame(rows, columns=columns)
 
+    results = pd.DataFrame(rows, columns=columns)
+    results_reports = pd.DataFrame.from_dict(all_models_reports)
+    print('results_reports: ', results_reports)
     if exportCSV:
         results.to_csv(fileName+'_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+        results_reports.to_csv(fileName+'_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+    if exportJSON:
+        with open(fileName+'_results.json', 'w') as res:
+            json.dump(all_models_results, res, indent=4)
+        with open(fileName+'_reports_results.json', 'w') as rep:
+            json.dump(all_models_reports, rep, indent=4)
     return results
