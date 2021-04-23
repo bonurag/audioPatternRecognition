@@ -190,6 +190,7 @@ def plot_3D_PCA(inputPCAData, savePlot=True, fileName='Default File Name'):
 def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot=False, target_names=[],
                         fileName='Default File Name', centroidsValue=[]):
     useData = inputData.copy()
+    columnData = inputColumns.copy()
     if numOfComponents > 1:
         columnsComponents = []
         for col in range(numOfComponents):
@@ -211,9 +212,9 @@ def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=T
     c_transformed = pca_fit.transform(centroidsValue)
 
     # Concatenate With Target Label
-    frames = [principalDf, inputColumns]
+    frames = [principalDf, columnData]
     concatData = pd.concat(frames)
-    concatData = pd.concat([principalDf.reset_index(drop=True), inputColumns.reset_index(drop=True)], axis=1)
+    concatData = pd.concat([principalDf.reset_index(drop=True), columnData.reset_index(drop=True)], axis=1)
     if numOfComponents == 2:
         if plotMatrix:
             plot_PCA(concatData, savePlot, target_names, fileName)
@@ -257,14 +258,14 @@ def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], ge
 
 
 def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_names=[], fileName='Default File Name'):
-    inputData['label'] = labels
-    data = metrics.confusion_matrix(inputData['genre'], inputData['label'])
+    inputData['predicted_label'] = labels
+    data = metrics.confusion_matrix(inputData['genre'], inputData['predicted_label'])
     df_cm = pd.DataFrame(data, columns=np.unique(target_names), index=np.unique(target_names))
     df_cm.index.name = 'Actual'
     df_cm.columns.name = 'Predicted'
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(15, 10))
     sns.set(font_scale=1)
-    sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8})
+    sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
     if savePlot:
         print('Save K-means Confusion Matrix')
         plt.savefig(fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
@@ -364,11 +365,14 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
 
 
 def runKmeans(inputData, clustersNumber=1, randomState=10):
+    start_time = time.time()
     kmean = KMeans(clustersNumber, random_state=randomState)
     kmean.fit(inputData)
     kmean.predict(inputData)
     labels = kmean.labels_
     centroids = kmean.cluster_centers_
+    executionTime = time.time() - start_time
+    print('EXECUTION TIME: %s Sec' % executionTime)
     return labels, centroids
 
 
@@ -415,19 +419,16 @@ def plot_roc(y_test, y_score, classifierName='Deafult Classifier Name', savePlot
     plt.show()
 
 
-def plot_Classification_Report(inputData, savePlot=True, exportJSON=True, labels=[], target_names=[],
+def plot_Classification_Report(inputData, exportJSON=True, labels=[], target_names=[],
                                fileName='Default File Name'):
-    inputData['label'] = labels
+    inputData['predicted_label'] = labels
     report_dic = False
     if exportJSON:
         report_dic = True
-    report = metrics.classification_report(inputData['genre'], inputData['label'], target_names=target_names,
+    report = metrics.classification_report(inputData['genre'], inputData['predicted_label'], target_names=target_names,
                                            output_dict=report_dic)
     print('results_reports: ', report)
-    if savePlot:
-        print('Save K-means Confusion Matrix')
-        plt.savefig(fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
     if exportJSON:
-        with open(fileName + '_results.json', 'w') as res:
+        with open(fileName + '_report_results.json', 'w') as res:
             json.dump(report, res, indent=4)
     plt.show()

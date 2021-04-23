@@ -74,10 +74,10 @@ def initDataAndModelUL(input_file_path, features_file_path, features_to_drop, im
     apr_functions_ul.plot_confusion_matrix_kmeans(df, True, labels, getGenres(features_file_path), image_file_name)
 
     # Get K-means Classification Report
-    apr_functions_ul.plot_Classification_Report(df, True, True, labels, getGenres(features_file_path), image_file_name)
+    apr_functions_ul.plot_Classification_Report(df, True, labels, getGenres(features_file_path), image_file_name)
 
     # Get ROC Plot
-    apr_functions_ul.plot_roc(y.values, labels, 'K-Means', True, getGenres(features_file_path), 'K-Means')
+    apr_functions_ul.plot_roc(y.values, labels, 'K-Means', True, getGenres(features_file_path), image_file_name)
 
     # Get Silhouette Plot
     apr_functions_ul.plot_Silhouette(X, 2, 12, True, image_file_name)
@@ -131,4 +131,4 @@ def startEvaluation(input_dataset_path, features_file_path, drop_Time_Features=[
                 break
 
 if __name__ == "__main__":
-    startEvaluation(dataset_path, features_file_path, [], [], type_learning='UL')
+    startEvaluation(dataset_path, features_file_path, type_learning='UL')

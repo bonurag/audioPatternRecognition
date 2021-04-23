@@ -20,6 +20,8 @@ from sklearn import metrics
 
 from itertools import cycle
 
+import pickle
+
 genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 
@@ -254,9 +256,12 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
     error_score = (1 - metrics.accuracy_score(y_test, y_pred)) * 100
     loss = metrics.log_loss(y_test, y_proba)
     kappa = metrics.cohen_kappa_score(y_test, y_pred, labels=None, weights=None)
-    mse = metrics.mean_squared_error(y_test, y_pred, squared=False)
-    rmse = metrics.mean_squared_error(y_test, y_pred, squared=True)
+    mse = metrics.mean_squared_error(y_test, y_pred, squared=True)
+    rmse = metrics.mean_squared_error(y_test, y_pred, squared=False)
     mae = metrics.mean_absolute_error(y_test, y_pred)
+    f1_score = metrics.f1_score(y_test, y_pred, average='weighted')
+    precision_score = metrics.precision_score(y_test, y_pred, average='weighted')
+    recall_score = metrics.recall_score(y_test, y_pred, average='weighted')
 
     single_metrics['single_results']['CLASSIFIER_NAME'] = classifierName
     single_metrics['single_results']['ACC'] = accuracy
@@ -266,10 +271,19 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
     single_metrics['single_results']['MSE'] = mse
     single_metrics['single_results']['RMSE'] = rmse
     single_metrics['single_results']['MAE'] = mae
-    single_metrics['single_results']['EXEC_TIME'] = executionTime
+    single_metrics['single_results']['WEIGHTED_F1_SCORE'] = f1_score
+    single_metrics['single_results']['WEIGHTED_PRECISION'] = precision_score
+    single_metrics['single_results']['WEIGHTED_RECALL'] = recall_score
+    single_metrics['single_results']['EXECUTION_TIME'] = executionTime
 
     clf_report = metrics.classification_report(y_test, y_pred, target_names=target_names, output_dict=True)
     return single_metrics, clf_report
+
+
+def save_model(inputClassifier, saveModelName):
+    print('Save Model {} - {} '.format(inputClassifier, saveModelName))
+    filename = saveModelName+'.sav'
+    pickle.dump(inputClassifier, open(filename, 'wb'))
 
 
 def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMatrix=True, predictionsCompare=True,
@@ -285,6 +299,7 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     y_pred = clf.predict(X_test)
     y_proba = clf.predict_proba(X_test)
 
+    save_model(clf, classifierName+'_'+fileName)
     print()
     if plotConfMatrix:
         plot_cm(clf, X_test, y_test, genres, None, classifierName, True, fileName)
@@ -352,7 +367,7 @@ def getModel(test_Model=False):
 
 
 def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True, exportJSON=True, target_names=[]):
-    columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'EXEC_TIME']
+    columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE', 'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
     all_models_results = {}
     all_models_reports = {}
     for key in classifier_models.keys():
