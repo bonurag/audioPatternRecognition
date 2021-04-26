@@ -33,7 +33,7 @@ def initDataAndModelSL(input_file_path, features_file_path, features_to_drop, im
 
     if 'tempo' in df:
         # Get BMP aggregate results and PLot
-        apr_functions.plot_BPM_Bar(df, True, image_file_name, len(getGenres(features_file_path)))
+        apr_functions.plot_BPM_Bar(df, True, image_file_name, getGenres(features_file_path))
 
     # Load Classifier Models
     load_models = apr_functions.getModel()
@@ -131,4 +131,4 @@ def startEvaluation(input_dataset_path, features_file_path, drop_Time_Features=[
                 break
 
 if __name__ == "__main__":
-    startEvaluation(dataset_path, features_file_path, type_learning='UL')
+    startEvaluation(dataset_path, features_file_path, type_learning='SL')

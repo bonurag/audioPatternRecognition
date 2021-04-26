@@ -29,7 +29,7 @@ def load_data(data_path, normalization='std', columnsToDrop=[]):
     df = pd.read_csv(data_path)
 
     if columnsToDrop:
-      df = df.drop(columns=columnsToDrop)
+        df = df.drop(columns=columnsToDrop)
 
     ord_enc = preprocessing.OrdinalEncoder()
     df['genre'] = ord_enc.fit_transform(df[['genre']])
@@ -41,10 +41,10 @@ def load_data(data_path, normalization='std', columnsToDrop=[]):
 
     cols = X.columns
     if normalization == 'std':
-        ### NORMALIZE X WITH STANDARD SCALER ####
+        # NORMALIZE X WITH STANDARD SCALER #
         resized_data = preprocessing.StandardScaler()
     elif normalization == 'min_max':
-        #### NORMALIZE X WITH Min Max SCALER ####
+        # NORMALIZE X WITH Min Max SCALER #
         resized_data = preprocessing.MinMaxScaler()
 
     np_scaled = resized_data.fit_transform(X)
@@ -70,10 +70,10 @@ def prepare_datasets(X, y, test_size=0.3):
 
 
 def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName='Default File Name'):
-    plt.figure(figsize=(10, 10))
-    sns.set(font_scale=0.8)
+    plt.figure(figsize=(12, 12))
+    sns.set(font_scale=1.4)
     sns.heatmap(correlation_matrix, cmap='coolwarm')
-    plt.title('Correlation between different fearures')
+    plt.title('Correlation between different fearures', fontsize=22)
     if savePlot:
         print('Save Correlation Matrix')
         plt.savefig(fileName + ' - ' + 'Correlation Matrix.jpg')
@@ -111,18 +111,20 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default Fi
     new_data = inputPCAData.copy()
     genres = target_names
     if len(target_names) == 10:
-        genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
-                  8: 'reggae', 9: 'rock'}
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+    # genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
+    #           8: 'reggae', 9: 'rock'}
     elif len(target_names) == 5:
-        genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+    # genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
 
     new_data.genre = [genres[item] for item in new_data.genre]
 
-    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep');
+    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep')
 
-    plt.title('PCA on Genres', fontsize=25)
+    plt.title('PCA on Genres', fontsize=22)
     plt.xticks(fontsize=14)
-    plt.yticks(fontsize=10);
+    plt.yticks(fontsize=10)
     plt.xlabel('Principal Component 1', fontsize=15)
     plt.ylabel('Principal Component 2', fontsize=15)
 
@@ -134,7 +136,7 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default Fi
 
 def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot=False, target_names=[],
            fileName='Fedault File Name'):
-    #### PCA Components ####
+    # PCA Components #
     pca = PCA(n_components=numOfComponents)
     principalComponents = pca.fit_transform(inputData)
     principalDf = pd.DataFrame(data=principalComponents, columns=['PC1', 'PC2'])
@@ -147,19 +149,21 @@ def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot
     return concatData
 
 
-def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', numGenres=10):
+def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', target_names=[]):
     plt.figure(figsize=(15, 7))
     new_data = inputData[['genre', 'tempo']].copy()
-    if numGenres == 10:
-        genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
-                  8: 'reggae', 9: 'rock'}
-    elif numGenres == 5:
-        genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
+    if len(target_names) == 10:
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+        # genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
+        #           8: 'reggae', 9: 'rock'}
+    elif len(target_names) == 5:
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+        # genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
 
     new_data.genre = [genres[item] for item in new_data.genre]
 
     sns.boxplot(x=new_data.genre, y=new_data.tempo, palette='husl')
-    plt.title('BPM Boxplot for Genres', fontsize=20)
+    plt.title('BPM Boxplot for Genres', fontsize=22)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=10);
     plt.xlabel('Genre', fontsize=15)
@@ -171,7 +175,7 @@ def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', numGen
     plt.show()
 
 
-def plot_roc(y_test, y_score, classifierName='Deafult Classifier Name', savePlot=False, target_names=[],
+def plot_roc(y_test, y_score, classifierName='Default Classifier Name', savePlot=False, target_names=[],
              fileName='Default File Name'):
     genres = target_names
     if len(target_names) == 10:
@@ -195,10 +199,10 @@ def plot_roc(y_test, y_score, classifierName='Deafult Classifier Name', savePlot
     plt.plot([0, 1], [0, 1], 'k--', lw=1.5)
     plt.xlim([-0.05, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate (FPR)')
-    plt.ylabel('True Positive Rate (TPR)')
-    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper())
-    plt.legend(loc='lower right')
+    plt.xlabel('False Positive Rate (FPR)', fontsize=22)
+    plt.ylabel('True Positive Rate (TPR)', fontsize=22)
+    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(), fontsize=22)
+    plt.legend(loc='lower right', prop={'size': 12})
 
     if savePlot:
         print('Save ROC Plot')
@@ -206,12 +210,12 @@ def plot_roc(y_test, y_score, classifierName='Deafult Classifier Name', savePlot
     plt.show()
 
 
-def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName='Deafult Classifier Name', savePlot=False,
+def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName='Default Classifier Name', savePlot=False,
             fileName='Default File Name'):
-    fig, ax = plt.subplots(figsize=(15, 10))
+    fig, ax = plt.subplots(figsize=(10, 10))
     metrics.plot_confusion_matrix(clf, X_test, y_test, normalize=normalize, cmap=plt.cm.Blues, ax=ax,
                                   display_labels=classes, values_format='.0f')
-    ax.set_title('Confusione Matrix for ' + classifierName.replace('_', ' ').upper())
+    ax.set_title('Confusion Matrix for ' + classifierName.replace('_', ' ').upper(), fontsize=22)
     plt.grid(False)
 
     if savePlot:
@@ -220,7 +224,7 @@ def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName='Deaf
     plt.show()
 
 
-def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], classifierName='Deafult Classifier Name',
+def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], classifierName='Default Classifier Name',
                              savePlot=False, fileName='Default File Name'):
     genres = target_names
     calc_cm = metrics.confusion_matrix(y_test, y_pred, normalize=normalize_cm)
@@ -282,7 +286,7 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
 
 def save_model(inputClassifier, saveModelName):
     print('Save Model {} - {} '.format(inputClassifier, saveModelName))
-    filename = saveModelName+'.sav'
+    filename = saveModelName + '_Model.sav'
     pickle.dump(inputClassifier, open(filename, 'wb'))
 
 
@@ -299,7 +303,7 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     y_pred = clf.predict(X_test)
     y_proba = clf.predict_proba(X_test)
 
-    save_model(clf, classifierName+'_'+fileName)
+    save_model(clf, fileName)
     print()
     if plotConfMatrix:
         plot_cm(clf, X_test, y_test, genres, None, classifierName, True, fileName)
@@ -360,14 +364,17 @@ def getModel(test_Model=False):
         # Artificial Neural Network
         ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
                                        hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
-                                       random_state=1, activation='relu', learning_rate='adaptive', early_stopping=False,
+                                       random_state=1, activation='relu', learning_rate='adaptive',
+                                       early_stopping=False,
                                        verbose=False, max_iter=2000)
         classifier_models.update({'ANN_Classifier': ANN_Classifier})
     return classifier_models
 
 
-def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True, exportJSON=True, target_names=[]):
-    columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE', 'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
+def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True,
+               exportJSON=True, target_names=[]):
+    columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE',
+                         'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
     all_models_results = {}
     all_models_reports = {}
     for key in classifier_models.keys():
@@ -376,9 +383,11 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='De
             usePredictProba = True
         elif model_name == 'Random_Forest_Classifier' or model_name == 'ANN_Classifier':
             usePredictProba = False
-        image_file_name = model_name+'_'+fileName
-        single_data_result, report = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test, True,
-                                          True, True, model_name, usePredictProba, target_names, image_file_name)
+        image_file_name = model_name + '_' + fileName
+        single_data_result, report = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test,
+                                                  True,
+                                                  True, True, model_name, usePredictProba, target_names,
+                                                  image_file_name)
         all_models_results[model_name] = single_data_result
         all_models_reports[model_name] = report
     print()
@@ -389,11 +398,11 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='De
     results_reports = pd.DataFrame.from_dict(all_models_reports)
     print('results_reports: ', results_reports)
     if exportCSV:
-        results.to_csv(fileName+'_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
-        results_reports.to_csv(fileName+'_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+        results.to_csv(fileName + '_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+        results_reports.to_csv(fileName + '_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
     if exportJSON:
-        with open(fileName+'_results.json', 'w') as res:
+        with open(fileName + '_results.json', 'w') as res:
             json.dump(all_models_results, res, indent=4)
-        with open(fileName+'_reports_results.json', 'w') as rep:
+        with open(fileName + '_reports_results.json', 'w') as rep:
             json.dump(all_models_reports, rep, indent=4)
     return results

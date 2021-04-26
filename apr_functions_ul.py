@@ -76,9 +76,9 @@ def prepare_datasets(X, y, test_size=0.3):
 
 def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName='Default File Name'):
     plt.figure(figsize=(12, 12))
-    sns.set(font_scale=0.8)
+    sns.set(font_scale=1.4)
     sns.heatmap(correlation_matrix, cmap='coolwarm')
-    plt.title('Correlation between different fearures')
+    plt.title('Correlation between different fearures', fontsize=22)
     if savePlot:
         print('Save Correlation Matrix')
         plt.savefig(fileName + ' - ' + 'Correlation Matrix.jpg')
@@ -125,9 +125,9 @@ def getPCA_VarRatio_Plot(inputData, savePlot=True, fileName='Default File Name')
     plt.xticks(np.arange(0, len(inputData.columns), 1))
     plt.step(range(0, len(inputData.columns)), cum_var_exp, where='mid', label='cumulative explained variance', c='red')
     plt.ylim(0, 1.1)
-    plt.xlabel('Principal Components')
-    plt.ylabel('Explained variance ratio')
-    plt.legend(loc='best')
+    plt.xlabel('Principal Components', fontsize=22)
+    plt.ylabel('Explained variance ratio', fontsize=22)
+    plt.legend(loc='best', prop={'size': 12})
     if savePlot:
         print('Save PCA Variance Ratio Plot')
         plt.savefig(fileName + ' - ' + 'PCA Variance Ratio Plot.jpg')
@@ -139,18 +139,20 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default Fi
     new_data = inputPCAData.copy()
     genres = target_names
     if len(target_names) == 10:
-        genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
-                  8: 'reggae', 9: 'rock'}
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+    # genres = {0: 'blues', 1: 'classical', 2: 'country', 3: 'disco', 4: 'hiphop', 5: 'jazz', 6: 'metal', 7: 'pop',
+    #           8: 'reggae', 9: 'rock'}
     elif len(target_names) == 5:
-        genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
+        genres = {i: target_names[i] for i in range(0, len(target_names))}
+    # genres = {0: 'classical', 1: 'disco', 2: 'jazz', 3: 'reggae', 4: 'rock'}
 
     new_data.genre = [genres[int(item)] for item in new_data.genre]
 
-    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep');
+    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep')
 
-    plt.title('PCA on Genres', fontsize=25)
+    plt.title('PCA on Genres', fontsize=22)
     plt.xticks(fontsize=14)
-    plt.yticks(fontsize=10);
+    plt.yticks(fontsize=10)
     plt.xlabel('Principal Component 1', fontsize=15)
     plt.ylabel('Principal Component 2', fontsize=15)
 
@@ -250,7 +252,7 @@ def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], ge
         ax.tick_params(axis='y', which='both', left='off', top='off', labelleft='off')
 
     ax.legend()
-    ax.set_title("Genres Music Clusters Results.", fontsize=20)
+    ax.set_title("Genres Music Clusters Results.", fontsize=22)
     if savePlot:
         print('Save Clusters Plot')
         plt.savefig(fileName + ' - ' + 'Clusters Plot.jpg')
@@ -263,8 +265,8 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
     df_cm = pd.DataFrame(data, columns=np.unique(target_names), index=np.unique(target_names))
     df_cm.index.name = 'Actual'
     df_cm.columns.name = 'Predicted'
-    plt.figure(figsize=(15, 10))
-    sns.set(font_scale=1)
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1.4)
     sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
     if savePlot:
         print('Save K-means Confusion Matrix')
@@ -295,11 +297,11 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
 
     ax1.plot(NumberOfClusters, silhouette_score_values)
     ax1.plot(NumberOfClusters, silhouette_score_values, 'bo')
-    ax1.set_title("Silhouette score values vs Numbers of Clusters ")
+    ax1.set_title("Silhouette Score Values vs Numbers of Clusters", fontsize=22)
     ax1.set_yticks(y_ax_ticks)
-    ax1.set_ylabel('Silhouette Score')
+    ax1.set_ylabel('Silhouette Score', fontsize=22)
     ax1.set_xticks(x_ax_ticks)
-    ax1.set_xlabel('Number Of Clusters')
+    ax1.set_xlabel('Number Of Clusters', fontsize=22)
     ax1.grid(False)
 
     ax2 = ax1.twinx()
@@ -307,7 +309,7 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
     ax2.plot(NumberOfClusters, executiontime_values, 'orange', linestyle='dashed')
     ax2.plot(NumberOfClusters, executiontime_values, 'orange', marker="o", linestyle='dashed')
     ax2.set_yticks(y_ax2_ticks)
-    ax2.set_ylabel('Fit Time (sec)')
+    ax2.set_ylabel('Fit Time (sec)', fontsize=22)
     ax2.grid(False)
 
     Optimal_NumberOf_Components = NumberOfClusters[silhouette_score_values.index(max(silhouette_score_values))]
@@ -316,6 +318,7 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
     Optimal_Execution_Time = NumberOfClusters[executiontime_values.index(max(executiontime_values))]
     Worst_Execution_Time = NumberOfClusters[executiontime_values.index(min(executiontime_values))]
 
+    plt.rcParams.update({'font.size': 12})
     for i in silhouette_score_values:
         clr = 'black'
         wgt = 'normal'
@@ -354,8 +357,8 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
                label='min Value', linestyle='dashdot')
 
     # Adding legend
-    ax1.legend(loc='upper center')
-    ax2.legend(['ExecutionTime'], loc='upper right')
+    ax1.legend(loc='upper center', prop={'size': 12})
+    ax2.legend(['ExecutionTime'], loc='upper right', prop={'size': 12})
 
     if savePlot:
         print('Save Silhouette Plot')
@@ -408,10 +411,10 @@ def plot_roc(y_test, y_score, classifierName='Deafult Classifier Name', savePlot
     plt.plot([0, 1], [0, 1], 'k--', lw=1.5)
     plt.xlim([-0.05, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate (FPR)')
-    plt.ylabel('True Positive Rate (TPR)')
-    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper())
-    plt.legend(loc='lower right')
+    plt.xlabel('False Positive Rate (FPR)', fontsize=22)
+    plt.ylabel('True Positive Rate (TPR)', fontsize=22)
+    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(), fontsize=22)
+    plt.legend(loc='lower right', prop={'size': 12})
 
     if savePlot:
         print('Save ROC Plot')
@@ -428,6 +431,7 @@ def plot_Classification_Report(inputData, exportJSON=True, labels=[], target_nam
     report = metrics.classification_report(inputData['genre'], inputData['predicted_label'], target_names=target_names,
                                            output_dict=report_dic)
     print('results_reports: ', report)
+
     if exportJSON:
         with open(fileName + '_report_results.json', 'w') as res:
             json.dump(report, res, indent=4)
