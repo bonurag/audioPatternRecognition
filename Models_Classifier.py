@@ -1,14 +1,11 @@
 import apr_functions
 import apr_functions_ul
+import apr_constants
 import os
 
 genres = '10'
 features_file_path = 'genres_' + genres
 dataset_path = 'feature_csv/GTZAN_' + genres + '_Genres/data/'
-
-Time_Domain_Audio_Features = ['tempo', 'energy', 'energy_entropy', 'rmse', 'zcr']
-Frequency_Domain_Audio_Features = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw', 'spec_contrast',
-                                   'rolloff']
 
 
 def getGenres(features_file_path):
@@ -54,7 +51,7 @@ def initDataAndModelUL(input_file_path, features_file_path, features_to_drop, im
     apr_functions_ul.getPCA_VarRatio_Plot(X, True, image_file_name)
 
     # Get K-means results
-    labels, centroids = apr_functions_ul.runKmeans(X, 10, 20)
+    labels, centroids = apr_functions_ul.runKmeans(X, 10, 20, image_file_name)
 
     # Get PCA and Plot
     num_components = 2
@@ -67,7 +64,7 @@ def initDataAndModelUL(input_file_path, features_file_path, features_to_drop, im
                                                         image_file_name, centroids)
 
     # Get Clusters Plot
-    apr_functions_ul.plot_Clusters(pca_data, centroids, labels, apr_functions_ul.colors_list,
+    apr_functions_ul.plot_Clusters(pca_data, centroids, labels, apr_constants.colors_list,
                                    getGenres(features_file_path), True, True, image_file_name)
 
     # Get K-means Confusion Matrix Plot
@@ -131,4 +128,7 @@ def startEvaluation(input_dataset_path, features_file_path, drop_Time_Features=[
                 break
 
 if __name__ == "__main__":
-    startEvaluation(dataset_path, features_file_path, type_learning='SL')
+    startEvaluation(dataset_path,
+                    features_file_path,
+                    drop_Frequency_Features=apr_constants.Frequency_Domain_Audio_Features,
+                    type_learning='UL')

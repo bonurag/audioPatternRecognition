@@ -21,8 +21,7 @@ from sklearn import metrics
 from itertools import cycle
 
 import pickle
-
-genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
+import apr_constants
 
 
 def load_data(data_path, normalization='std', columnsToDrop=[]):
@@ -69,11 +68,11 @@ def prepare_datasets(X, y, test_size=0.3):
     return X_train, X_test, y_train, y_test
 
 
-def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName='Default File Name'):
+def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME):
     plt.figure(figsize=(12, 12))
     sns.set(font_scale=1.4)
-    sns.heatmap(correlation_matrix, cmap='coolwarm')
-    plt.title('Correlation between different fearures', fontsize=22)
+    sns.heatmap(correlation_matrix, cmap='coolwarm', square=True)
+    plt.title('Correlation between different features', fontsize=apr_constants.TITLE_FONT_SIZE)
     if savePlot:
         print('Save Correlation Matrix')
         plt.savefig(fileName + ' - ' + 'Correlation Matrix.jpg')
@@ -81,7 +80,7 @@ def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName='Default
 
 
 def getCorrelatedFeatures(inputData, corrValue=0.9, dropFeatures=True, plotMatrix=True, savePlot=False,
-                          fileName='Default File Name'):
+                          fileName=apr_constants.DEFAULT_FILE_NAME):
     correlation_matrix = inputData.corr(method='pearson', min_periods=50)
     correlated_features = set()
     for i in range(len(correlation_matrix.columns)):
@@ -106,7 +105,7 @@ def getCorrelatedFeatures(inputData, corrValue=0.9, dropFeatures=True, plotMatri
             plot_correlation_matrix(drop_correlation_matrix, savePlot, fileName)
 
 
-def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default File Name'):
+def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME):
     plt.figure(figsize=(20, 10))
     new_data = inputPCAData.copy()
     genres = target_names
@@ -122,7 +121,7 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName='Default Fi
 
     sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep')
 
-    plt.title('PCA on Genres', fontsize=22)
+    plt.title('PCA on Genres', fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=10)
     plt.xlabel('Principal Component 1', fontsize=15)
@@ -149,7 +148,7 @@ def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot
     return concatData
 
 
-def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', target_names=[]):
+def plot_BPM_Bar(inputData, savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME, target_names=[]):
     plt.figure(figsize=(15, 7))
     new_data = inputData[['genre', 'tempo']].copy()
     if len(target_names) == 10:
@@ -163,7 +162,7 @@ def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', target
     new_data.genre = [genres[item] for item in new_data.genre]
 
     sns.boxplot(x=new_data.genre, y=new_data.tempo, palette='husl')
-    plt.title('BPM Boxplot for Genres', fontsize=22)
+    plt.title('BPM Boxplot for Genres', fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=10);
     plt.xlabel('Genre', fontsize=15)
@@ -175,8 +174,8 @@ def plot_BPM_Bar(inputData, savePlot=False, fileName='Default File Name', target
     plt.show()
 
 
-def plot_roc(y_test, y_score, classifierName='Default Classifier Name', savePlot=False, target_names=[],
-             fileName='Default File Name'):
+def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False, target_names=[],
+             fileName=apr_constants.DEFAULT_FILE_NAME):
     genres = target_names
     if len(target_names) == 10:
         test_label = preprocessing.label_binarize(y_test, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -189,8 +188,7 @@ def plot_roc(y_test, y_score, classifierName='Default Classifier Name', savePlot
     for i in range(n_classes):
         fpr[i], tpr[i], _ = metrics.roc_curve(test_label[:, i], y_score[:, i])
         roc_auc[i] = metrics.auc(fpr[i], tpr[i])
-    colors = cycle(
-        ['blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'deepskyblue', 'silver', 'tomato', 'purple'])
+    colors = cycle(apr_constants.roc_color_list)
     plt.figure(figsize=(15, 10))
     for i, color in zip(range(n_classes), colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=1.5,
@@ -199,10 +197,10 @@ def plot_roc(y_test, y_score, classifierName='Default Classifier Name', savePlot
     plt.plot([0, 1], [0, 1], 'k--', lw=1.5)
     plt.xlim([-0.05, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate (FPR)', fontsize=22)
-    plt.ylabel('True Positive Rate (TPR)', fontsize=22)
-    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(), fontsize=22)
-    plt.legend(loc='lower right', prop={'size': 12})
+    plt.xlabel('False Positive Rate (FPR)', fontsize=24)
+    plt.ylabel('True Positive Rate (TPR)', fontsize=24)
+    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
+    plt.legend(loc='lower right', prop={'size': apr_constants.LEGEND_SIZE})
 
     if savePlot:
         print('Save ROC Plot')
@@ -210,8 +208,8 @@ def plot_roc(y_test, y_score, classifierName='Default Classifier Name', savePlot
     plt.show()
 
 
-def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName='Default Classifier Name', savePlot=False,
-            fileName='Default File Name'):
+def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False,
+            fileName=apr_constants.DEFAULT_FILE_NAME):
     fig, ax = plt.subplots(figsize=(10, 10))
     metrics.plot_confusion_matrix(clf, X_test, y_test, normalize=normalize, cmap=plt.cm.Blues, ax=ax,
                                   display_labels=classes, values_format='.0f')
@@ -224,13 +222,13 @@ def plot_cm(clf, X_test, y_test, classes, normalize='true', classifierName='Defa
     plt.show()
 
 
-def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], classifierName='Default Classifier Name',
-                             savePlot=False, fileName='Default File Name'):
+def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME,
+                             savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME):
     genres = target_names
     calc_cm = metrics.confusion_matrix(y_test, y_pred, normalize=normalize_cm)
     bar = pd.DataFrame(calc_cm, columns=genres, index=genres)
     ax = bar.plot(kind='bar', figsize=(15, 15), fontsize=14, width=0.8)
-    plt.title('Musical Genres BarPlot Predictions For ' + classifierName.replace('_', ' ').upper(), fontsize=16)
+    plt.title('Musical Genres BarPlot Predictions For ' + classifierName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xlabel('Musical Genres', fontsize=12)
     plt.xticks(rotation=45)
     plt.ylabel('Number of Occurrences', fontsize=12)
@@ -291,7 +289,7 @@ def save_model(inputClassifier, saveModelName):
 
 
 def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMatrix=True, predictionsCompare=True,
-                 classifierName='Default', usePredictProba=True, target_names=[], fileName='Default File Name'):
+                 classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, usePredictProba=True, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME):
     start_time = time.time()
     genres = target_names
     if usePredictProba:
@@ -371,7 +369,7 @@ def getModel(test_Model=False):
     return classifier_models
 
 
-def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName='Default File Name', exportCSV=True,
+def getResults(classifier_models, X_train, X_test, y_train, y_test, fileName=apr_constants.DEFAULT_FILE_NAME, exportCSV=True,
                exportJSON=True, target_names=[]):
     columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE',
                          'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
