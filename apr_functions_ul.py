@@ -74,32 +74,32 @@ def prepare_datasets(X, y, test_size=0.3):
     return X_train, X_test, y_train, y_test
 
 
-def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME):
+def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+    print('savePath: ', savePath)
     plt.figure(figsize=(12, 12))
     sns.set(font_scale=1.4)
     sns.heatmap(correlation_matrix, cmap='coolwarm', square=True)
     plt.title('Correlation between different features', fontsize=apr_constants.TITLE_FONT_SIZE)
     if savePlot:
         print('Save Correlation Matrix')
-        plt.savefig(fileName + ' - ' + 'Correlation Matrix.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'Correlation Matrix.jpg')
     plt.show()
 
 
 def getCorrelatedFeatures(inputData, corrValue=0.9, dropFeatures=True, plotMatrix=True, savePlot=False,
-                          fileName=apr_constants.DEFAULT_FILE_NAME):
+                          fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     correlation_matrix = inputData.corr(method='pearson', min_periods=50)
     correlated_features = set()
     for i in range(len(correlation_matrix.columns)):
         for j in range(i):
             if abs(correlation_matrix.iloc[i, j]) >= corrValue:
-                colname = correlation_matrix.columns[i]
-                correlated_features.add(colname)
+                correlated_features.add(correlation_matrix.columns[i])
 
     if dropFeatures == False:
         # print('Features Uneleted')
         if plotMatrix == True:
             # print('Print Correlation Matrix')
-            plot_correlation_matrix(correlation_matrix, savePlot, fileName)
+            plot_correlation_matrix(correlation_matrix, savePlot, fileName, savePath)
         return correlated_features
     elif dropFeatures == True:
         if len(correlated_features) > corrValue:
@@ -108,10 +108,10 @@ def getCorrelatedFeatures(inputData, corrValue=0.9, dropFeatures=True, plotMatri
         if plotMatrix == True:
             # print('Print Correlation Matrix')
             drop_correlation_matrix = inputData.corr(method='pearson', min_periods=50)
-            plot_correlation_matrix(drop_correlation_matrix, savePlot, fileName)
+            plot_correlation_matrix(drop_correlation_matrix, savePlot, fileName, savePath)
 
 
-def getPCA_VarRatio_Plot(inputData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME):
+def getPCA_VarRatio_Plot(inputData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     cov_mat = np.cov(inputData.T)
     eigen_vals, eigen_vecs = np.linalg.eig(cov_mat)
     tot = sum(eigen_vals)
@@ -130,11 +130,11 @@ def getPCA_VarRatio_Plot(inputData, savePlot=True, fileName=apr_constants.DEFAUL
     plt.legend(loc='best', prop={'size': apr_constants.LEGEND_SIZE})
     if savePlot:
         print('Save PCA Variance Ratio Plot')
-        plt.savefig(fileName + ' - ' + 'PCA Variance Ratio Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'PCA Variance Ratio Plot.jpg')
     plt.show()
 
 
-def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME):
+def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     plt.figure(figsize=(20, 10))
     new_data = inputPCAData.copy()
     genres = target_names
@@ -158,11 +158,11 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constan
 
     if savePlot:
         print('Save PCA Plot')
-        plt.savefig(fileName + ' - ' + 'PCA Scattert Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'PCA Scattert Plot.jpg')
     plt.show()
 
 
-def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME):
+def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     # initialize figure and 3d projection for the PC3 data
     fig = plt.figure(figsize=(15, 12))
     ax = fig.add_subplot(111, projection='3d')
@@ -185,12 +185,12 @@ def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE
     fig.colorbar(plot, shrink=0.6, aspect=9)
     if savePlot:
         print('Save 3D PCA Plot')
-        plt.savefig(fileName + ' - ' + 'PCA 3D Scattert Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'PCA 3D Scattert Plot.jpg')
     plt.show()
 
 
 def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot=False, target_names=[],
-                        fileName=apr_constants.DEFAULT_FILE_NAME, centroidsValue=[]):
+                        fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT, centroidsValue=[]):
     useData = inputData.copy()
     columnData = inputColumns.copy()
     if numOfComponents > 1:
@@ -219,17 +219,17 @@ def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=T
     concatData = pd.concat([principalDf.reset_index(drop=True), columnData.reset_index(drop=True)], axis=1)
     if numOfComponents == 2:
         if plotMatrix:
-            plot_PCA(concatData, savePlot, target_names, fileName)
+            plot_PCA(concatData, savePlot, target_names, fileName, savePath)
         return concatData, c_transformed
     elif numOfComponents == 3:
         if plotMatrix:
-            plot_3D_PCA(concatData, savePlot, fileName)
+            plot_3D_PCA(concatData, savePlot, fileName, savePath)
     else:
         return concatData
 
 
 def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], genres_list=[], savePlot=True,
-                  plotCentroids=True, fileName=apr_constants.DEFAULT_FILE_NAME):
+                  plotCentroids=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     pca_1, pca_2 = inputPCAData['PC1'], inputPCAData['PC2']
     centroids_x = centroidsValue[:, 0]
     centroids_y = centroidsValue[:, 1]
@@ -255,11 +255,11 @@ def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], ge
     ax.set_title("Genres Music Clusters Results", fontsize=22)
     if savePlot:
         print('Save Clusters Plot')
-        plt.savefig(fileName + ' - ' + 'Clusters Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'Clusters Plot.jpg')
     plt.show()
 
 
-def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME):
+def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     inputData['predicted_label'] = labels
     data = metrics.confusion_matrix(inputData['genre'], inputData['predicted_label'])
     df_cm = pd.DataFrame(data, columns=np.unique(target_names), index=np.unique(target_names))
@@ -268,13 +268,14 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
     plt.figure(figsize=(10, 10))
     sns.set(font_scale=1.4)
     sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
+    plt.title('CM for K-Means ' + fileName.replace('_', ' ').upper(), fontsize=22)
     if savePlot:
         print('Save K-means Confusion Matrix')
-        plt.savefig(fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
     plt.show()
 
 
-def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME):
+def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     eval_data = inputData.copy()
     silhouette_score_values = list()
     executiontime_values = list()
@@ -362,16 +363,16 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
 
     if savePlot:
         print('Save Silhouette Plot')
-        plt.savefig(fileName + ' - ' + 'Clusters Silhouette Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'Clusters Silhouette Plot.jpg')
     plt.show()
     print("Optimal number of components is:", Optimal_NumberOf_Components)
 
 
-def runKmeans(inputData, clustersNumber=1, randomState=10, modelFileName=apr_constants.DEFAULT_FILE_NAME):
+def runKmeans(inputData, clustersNumber=1, randomState=10, modelFileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     start_time = time.time()
     kmean = KMeans(clustersNumber, random_state=randomState)
     kmean.fit(inputData)
-    apr_functions.save_model(kmean, modelFileName)
+    apr_functions.save_model(kmean, savePath+modelFileName)
     kmean.predict(inputData)
     labels = kmean.labels_
     centroids = kmean.cluster_centers_
@@ -391,7 +392,7 @@ def runKmeansSplitData(inputDataTrain, inputDataTest, clustersNumber=1, randomSt
 
 
 def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False, target_names=[],
-             fileName=apr_constants.DEFAULT_FILE_NAME):
+             fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     genres = target_names
     test_label = preprocessing.label_binarize(y_test, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     y_label = preprocessing.label_binarize(y_score, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -404,7 +405,7 @@ def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NA
         roc_auc[i] = metrics.auc(fpr[i], tpr[i])
     # colors = cycle(
     #     ['blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'deepskyblue', 'silver', 'tomato', 'purple'])
-    colors = cycle(apr_constants.roc_color_list)
+    colors = cycle(apr_constants.ROC_COLOR_LIST)
     plt.figure(figsize=(15, 10))
     for i, color in zip(range(n_classes), colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=1.5,
@@ -420,12 +421,13 @@ def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NA
 
     if savePlot:
         print('Save ROC Plot')
-        plt.savefig(fileName + ' - ' + 'ROC Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'ROC Plot.jpg')
     plt.show()
 
 
 def plot_Classification_Report(inputData, exportJSON=True, labels=[], target_names=[],
-                               fileName=apr_constants.DEFAULT_FILE_NAME):
+                               fileName=apr_constants.DEFAULT_FILE_NAME,
+                               savePath=apr_constants.PROJECT_ROOT):
     inputData['predicted_label'] = labels
     report_dic = False
     if exportJSON:
@@ -435,6 +437,6 @@ def plot_Classification_Report(inputData, exportJSON=True, labels=[], target_nam
     print('results_reports: ', report)
 
     if exportJSON:
-        with open(fileName + '_report_results.json', 'w') as res:
+        with open(savePath+fileName + '_report_results.json', 'w') as res:
             json.dump(report, res, indent=4)
     plt.show()

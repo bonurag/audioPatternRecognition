@@ -1,14 +1,32 @@
-genre_target_names = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-colors_list = {'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'chocolate', 'skyblue', 'lime', 'cyan'}
-roc_color_list = {'blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'deepskyblue', 'silver', 'tomato',
+import os
+
+GENRE_TARGET_NAMES = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
+COLORS_LIST = {'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'chocolate', 'skyblue', 'lime', 'cyan'}
+ROC_COLOR_LIST = {'blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'deepskyblue', 'silver', 'tomato',
                   'purple'}
 
-Time_Domain_Audio_Features = ['tempo', 'energy', 'energy_entropy', 'rmse', 'zcr']
-Frequency_Domain_Audio_Features = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw', 'spec_contrast',
-                                   'rolloff']
+TIME_DOMAIN_FEATURES = ['tempo', 'energy', 'energy_entropy', 'rmse', 'zcr']
+FREQUENCY_DOMAIN_FEATURES = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw', 'spec_contrast',
+                             'rolloff']
 
 TITLE_FONT_SIZE = 30
-LEGEND_SIZE = 12
+LEGEND_SIZE = 16
 DEFAULT_FILE_NAME = 'Default File Name'
 DEFAULT_CLASSIFIER_NAME = 'Default Classifier Name'
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+GENRES = '10'
+FEATURES_FILE_PATH = 'genres_' + GENRES
+DATASET_PATH = 'feature_csv/GTZAN_' + GENRES + '_Genres/data/'
+
+RESULTS_ALL_FEATURES = 'results_all_features/'
+RESULTS_FREQUENCY_DOMAIN_FEATURES = 'results_frequency_domain_features/'
+RESULTS_TIME_DOMAIN_FEATURES = 'results_time_domain_features/'
+
+MODEL = 'Model/'
+DATA = 'Data/'
+
+SUPERVISED_LEARNING = 'Supervised_Learning/'
+UNSUPERVISED_LEARNING = 'Unsupervised_Learning/'
+
+ROOT_SAVE_PATH = 'export_results/'
