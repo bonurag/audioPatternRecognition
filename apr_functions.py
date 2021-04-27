@@ -352,7 +352,7 @@ def getModel(test_Model=False):
         classifier_models.update({'SVM': SVM_Classifier})
 
         # Random Forest
-        RF_Classifier = RandomForestClassifier(n_estimators=100, random_state=10)
+        RF_Classifier = RandomForestClassifier(n_estimators=10, random_state=10)
         classifier_models.update({'RF': RF_Classifier})
 
         # Artificial Neural Network
@@ -366,7 +366,7 @@ def getModel(test_Model=False):
         classifier_models.update({'SVM': SVM_Classifier})
 
         # Random Forest
-        RF_Classifier = RandomForestClassifier(n_estimators=100, random_state=10)
+        RF_Classifier = RandomForestClassifier(n_estimators=1000, random_state=10)
         classifier_models.update({'RF': RF_Classifier})
 
         # Artificial Neural Network
