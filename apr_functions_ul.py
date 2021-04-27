@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 import time
 import json
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 
@@ -42,11 +42,11 @@ def load_data(data_path, normalization='std', removeNullValue=True, columnsToDro
 
     x_cols = X.columns
     if normalization == 'std':
-        ### NORMALIZE X WITH STANDARD SCALER ####
+        # NORMALIZE X WITH STANDARD SCALER #
         resized_data = preprocessing.StandardScaler()
         np_scaled = resized_data.fit_transform(X)
     elif normalization == 'min_max':
-        #### NORMALIZE X WITH Min Max SCALER ####
+        # NORMALIZE X WITH Min Max SCALER #
         resized_data = preprocessing.MinMaxScaler()
         np_scaled = resized_data.fit_transform(X)
     elif normalization == None:
@@ -153,12 +153,12 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constan
     plt.title('PCA on Genres', fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=10)
-    plt.xlabel('Principal Component 1', fontsize=15)
-    plt.ylabel('Principal Component 2', fontsize=15)
+    plt.xlabel('Principal Component 1', fontsize=22)
+    plt.ylabel('Principal Component 2', fontsize=22)
 
     if savePlot:
         print('Save PCA Plot')
-        plt.savefig(savePath+fileName + ' - ' + 'PCA Scattert Plot.jpg')
+        plt.savefig(savePath+fileName + ' - ' + 'PCA Scatter Plot.jpg')
     plt.show()
 
 
@@ -252,7 +252,7 @@ def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], ge
         ax.tick_params(axis='y', which='both', left='off', top='off', labelleft='off')
 
     ax.legend()
-    ax.set_title("Genres Music Clusters Results", fontsize=22)
+    ax.set_title("Genres Music Clusters Results", fontsize=apr_constants.TITLE_FONT_SIZE)
     if savePlot:
         print('Save Clusters Plot')
         plt.savefig(savePath+fileName + ' - ' + 'Clusters Plot.jpg')
@@ -267,8 +267,9 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
     df_cm.columns.name = 'Predicted'
     plt.figure(figsize=(10, 10))
     sns.set(font_scale=1.4)
-    sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
-    plt.title('CM for K-Means ' + fileName.replace('_', ' ').upper(), fontsize=22)
+    graph = sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
+    graph.set_xticklabels(rotation=45)
+    plt.title('CM for K-Means ' + fileName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
     if savePlot:
         print('Save K-means Confusion Matrix')
         plt.savefig(savePath+fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')

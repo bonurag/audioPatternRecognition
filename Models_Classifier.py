@@ -17,29 +17,29 @@ def getGenres():
     return genre_target_names
 
 
-def initDataAndModelSL(input_file_path, features_to_drop, image_file_name):
+def initDataAndModelSL(input_file_path, features_to_drop, image_file_name, save_path):
     # Load Data
-    X, y, df = apr_functions.load_data(input_file_path, 'min_max', features_to_drop)
+    X, y, df = apr_functions.load_data(input_file_path, 'min_max', True, features_to_drop)
 
     # get train, validation, test splits
     X_train, X_test, y_train, y_test = apr_functions.prepare_datasets(X, y, 0.3)
 
     # Get Correlation Matrix and Plot
-    apr_functions.getCorrelatedFeatures(X, 0.7, True, True, True, image_file_name)
+    apr_functions.getCorrelatedFeatures(X, 0.7, True, True, True, image_file_name, save_path)
 
     # Get PCA and Plot
-    apr_functions.getPCA(X, y, 2, True, True, getGenres(), image_file_name)
+    apr_functions.getPCA(X, y, 2, True, True, getGenres(), image_file_name, save_path)
 
     if 'tempo' in df:
         # Get BMP aggregate results and PLot
-        apr_functions.plot_BPM_Bar(df, True, image_file_name, getGenres())
+        apr_functions.plot_BPM_Bar(df, True, getGenres(), image_file_name, save_path)
 
     # Load Classifier Models
-    load_models = apr_functions.getModel()
+    load_models = apr_functions.getModel(True)
 
     # Calculate classifier results
-    apr_functions.getResults(load_models, X_train, X_test, y_train, y_test, image_file_name, True, True,
-                             getGenres())
+    apr_functions.getResults(load_models, X_train, X_test, y_train, y_test, True, True,
+                             getGenres(), image_file_name, save_path)
 
 
 def initDataAndModelUL(input_file_path, features_to_drop, image_file_name, save_path):
@@ -117,12 +117,12 @@ def startEvaluation(input_dataset_path, drop_Time_Features=[], drop_Frequency_Fe
         if drop_Time_Features_Check:
             # print('IF drop_Time_Features_Check: ', file_path)
             # print(features_to_drop)
-            result_folder = apr_constants.RESULTS_ALL_FEATURES if len(features_to_drop) == 0 else apr_constants.FREQUENCY_DOMAIN_FEATURES
+            result_folder = apr_constants.RESULTS_ALL_FEATURES if len(features_to_drop) == 0 else apr_constants.RESULTS_FREQUENCY_DOMAIN_FEATURES
             if type_learning == 'SL':
-                save_path += apr_constants.SUPERVISED_LEARNING + str(result_folder) + '/' + str(mfcc_value) + '/'
-                initDataAndModelSL(file_path, features_to_drop, image_file_name)
+                save_path += apr_constants.SUPERVISED_LEARNING + str(result_folder) + str(mfcc_value) + '/'
+                initDataAndModelSL(file_path, features_to_drop, image_file_name, save_path)
             elif type_learning == 'UL':
-                save_path += apr_constants.UNSUPERVISED_LEARNING + str(result_folder) + '/' + str(mfcc_value) + '/'
+                save_path += apr_constants.UNSUPERVISED_LEARNING + str(result_folder) + str(mfcc_value) + '/'
                 initDataAndModelUL(file_path, features_to_drop, image_file_name, save_path)
         else:
             if drop_Frequency_Features_Check:
@@ -133,7 +133,7 @@ def startEvaluation(input_dataset_path, drop_Time_Features=[], drop_Frequency_Fe
             image_file_name = image_file_name.replace(mfcc_value + 'MFCC_', '')
             if type_learning == 'SL':
                 save_path += apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_TIME_DOMAIN_FEATURES
-                initDataAndModelSL(file_path, features_to_drop, image_file_name)
+                initDataAndModelSL(file_path, features_to_drop, image_file_name, save_path)
                 break
             elif type_learning == 'UL':
                 save_path += apr_constants.UNSUPERVISED_LEARNING + apr_constants.RESULTS_TIME_DOMAIN_FEATURES
@@ -145,4 +145,4 @@ if __name__ == "__main__":
     startEvaluation(dataset_path,
                     drop_Frequency_Features=[],
                     drop_Time_Features=apr_constants.TIME_DOMAIN_FEATURES,
-                    type_learning='UL')
+                    type_learning='SL')
