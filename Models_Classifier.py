@@ -35,7 +35,7 @@ def initDataAndModelSL(input_file_path, features_to_drop, image_file_name, save_
         apr_functions.plot_BPM_Bar(df, True, getGenres(), image_file_name, save_path)
 
     # Load Classifier Models
-    load_models = apr_functions.getModel(True)
+    load_models = apr_functions.getModel()
 
     # Calculate classifier results
     apr_functions.getResults(load_models, X_train, X_test, y_train, y_test, True, True,
@@ -144,5 +144,5 @@ def startEvaluation(input_dataset_path, drop_Time_Features=[], drop_Frequency_Fe
 if __name__ == "__main__":
     startEvaluation(dataset_path,
                     drop_Frequency_Features=[],
-                    drop_Time_Features=apr_constants.TIME_DOMAIN_FEATURES,
+                    drop_Time_Features=[],
                     type_learning='SL')

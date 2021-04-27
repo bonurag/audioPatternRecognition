@@ -267,9 +267,9 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
     df_cm.columns.name = 'Predicted'
     plt.figure(figsize=(10, 10))
     sns.set(font_scale=1.4)
-    graph = sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
-    graph.set_xticklabels(rotation=45)
-    plt.title('CM for K-Means ' + fileName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
+    heatmap = sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
+    heatmap.set_xticklabels(heatmap.get_xticklabels(), rotation=45)
+    plt.title('CM for K-Means', fontsize=apr_constants.TITLE_FONT_SIZE)
     if savePlot:
         print('Save K-means Confusion Matrix')
         plt.savefig(savePath+fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
