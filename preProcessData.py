@@ -7,7 +7,7 @@ import math
 DATASET_PATH = 'test_model'
 FILE_EXTENSION = 'wav'
 CHUNK_LENGTH = 30000
-EXCLUDE_FOLDER = {"source"}
+EXCLUDE_FOLDER = {'source', 'source_files', 'sub_chunk_files'}
 
 if __name__ == "__main__":
     for i, (dirpath, dirname, filenames) in enumerate(os.walk(DATASET_PATH, topdown=True)):

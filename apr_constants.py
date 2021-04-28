@@ -8,7 +8,6 @@ ROC_COLOR_LIST = {'blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'de
 TIME_DOMAIN_FEATURES = ['tempo', 'energy', 'energy_entropy', 'rmse', 'zcr']
 FREQUENCY_DOMAIN_FEATURES = ['chroma_stft', 'chroma_cqt', 'chroma_cens', 'spec_cent', 'spec_bw', 'spec_contrast',
                              'rolloff']
-
 TITLE_FONT_SIZE = 30
 LEGEND_SIZE = 16
 DEFAULT_FILE_NAME = 'Default File Name'
@@ -25,6 +24,7 @@ RESULTS_TIME_DOMAIN_FEATURES = 'results_time_domain_features/'
 
 MODEL = 'Model/'
 DATA = 'Data/'
+TEST = 'Test/'
 
 SUPERVISED_LEARNING = 'Supervised_Learning/'
 UNSUPERVISED_LEARNING = 'Unsupervised_Learning/'

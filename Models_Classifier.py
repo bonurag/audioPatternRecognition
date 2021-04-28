@@ -1,45 +1,36 @@
-import apr_functions
+import apr_functions_sl
 import apr_functions_ul
 import apr_constants
+import common_functions
+import plot_functions
 import os
 
-features_file_path = apr_constants.FEATURES_FILE_PATH
 dataset_path = apr_constants.DATASET_PATH
-
-
-def get_genres():
-    genre_target_names = []
-    for folder in os.listdir(os.path.join(features_file_path)):
-        genre_target_names.append(str(folder))
-
-    if len(genre_target_names) == 0:
-        genre_target_names = apr_constants.GENRE_TARGET_NAMES
-    return genre_target_names
 
 
 def init_data_and_model_sl(input_file_path, features_to_drop, image_file_name, save_path):
     # Load Data
-    x, y, df = apr_functions.load_data(input_file_path, 'min_max', True, features_to_drop)
+    x, y, df = apr_functions_sl.load_data(input_file_path, 'min_max', True, features_to_drop)
 
     # get train, validation, test splits
-    x_train, x_test, y_train, y_test = apr_functions.prepare_datasets(x, y, 0.3)
+    x_train, x_test, y_train, y_test = common_functions.prepare_datasets(x, y, 0.3, image_file_name, save_path)
 
     # Get Correlation Matrix and Plot
-    apr_functions.getCorrelatedFeatures(x, 0.7, True, True, True, image_file_name, save_path)
+    common_functions.getCorrelatedFeatures(x, 0.7, True, True, True, image_file_name, save_path)
 
     # Get PCA and Plot
-    apr_functions.getPCA(x, y, 2, True, True, get_genres(), image_file_name, save_path)
+    apr_functions_sl.getPCA(x, y, 2, True, True, common_functions.get_genres(), image_file_name, save_path)
 
     if 'tempo' in df:
         # Get BMP aggregate results and PLot
-        apr_functions.plot_BPM_Bar(df, True, get_genres(), image_file_name, save_path)
+        plot_functions.plot_BPM_Bar(df, True, common_functions.get_genres(), image_file_name, save_path)
 
     # Load Classifier Models
-    load_models = apr_functions.getModel()
+    load_models = apr_functions_sl.getModel()
 
     # Calculate classifier results
-    apr_functions.getResults(load_models, x_train, x_test, y_train, y_test, True, True,
-                             get_genres(), image_file_name, save_path)
+    apr_functions_sl.getResults(load_models, x_train, x_test, y_train, y_test, True, True,
+                                common_functions.get_genres(), image_file_name, save_path)
 
 
 def init_data_and_model_ul(input_file_path, features_to_drop, image_file_name, save_path):
@@ -47,44 +38,42 @@ def init_data_and_model_ul(input_file_path, features_to_drop, image_file_name, s
     x, y, df = apr_functions_ul.load_data(input_file_path, 'min_max', False, features_to_drop)
 
     # Get Correlation Matrix and Plot
-    apr_functions_ul.getCorrelatedFeatures(x, 0.7, True, True, True, image_file_name)
+    common_functions.getCorrelatedFeatures(x, 0.7, True, True, True, image_file_name, save_path)
 
     # Get PCA Variance Ratio
     apr_functions_ul.getPCA_VarRatio_Plot(x, True, image_file_name, save_path)
 
     # Get K-means results
-    labels, centroids = apr_functions_ul.runKmeans(x, 10, 20, image_file_name, save_path + apr_constants.MODEL)
+    labels, centroids = apr_functions_ul.runKmeans(x, 10, 20, image_file_name, save_path)
 
     # Get PCA and Plot
     num_components = 2
     if num_components == 2:
         pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, num_components, True, True,
-                                                                   get_genres(), image_file_name,
+                                                                   common_functions.get_genres(), image_file_name,
                                                                    save_path,
                                                                    centroids)
     elif num_components == 3:
         pca_data = apr_functions_ul.getPCAWithCentroids(x, y, num_components, True, True,
-                                                        get_genres(), image_file_name,
+                                                        common_functions.get_genres(), image_file_name,
                                                         save_path,
                                                         centroids)
 
     # Get Clusters Plot
-    apr_functions_ul.plot_Clusters(pca_data, centroids, labels, apr_constants.COLORS_LIST,
-                                   get_genres(), True, True, image_file_name, save_path)
+    plot_functions.plot_Clusters(pca_data, centroids, labels, apr_constants.COLORS_LIST,
+                                 common_functions.get_genres(), True, True, image_file_name, save_path)
 
     # Get K-means Confusion Matrix Plot
-    apr_functions_ul.plot_confusion_matrix_kmeans(df, True, labels, get_genres(), image_file_name, save_path)
+    plot_functions.plot_confusion_matrix_kmeans(df, True, labels, common_functions.get_genres(), image_file_name, save_path)
 
     # Get K-means Classification Report
-    apr_functions_ul.plot_Classification_Report(df, True, labels, get_genres(), image_file_name,
-                                                save_path + apr_constants.DATA)
+    plot_functions.plot_Classification_Report(df, True, labels, common_functions.get_genres(), image_file_name, save_path)
 
     # Get ROC Plot
-    apr_functions_ul.plot_roc(y.values, labels, 'K-Means', True, get_genres(), image_file_name, save_path)
-    apr_functions_ul.plot_roc(y.values, labels, 'K-Means', True, get_genres(), image_file_name, save_path)
+    plot_functions.plot_roc(y.values, labels, 'K-Means', True, common_functions.get_genres(), image_file_name, save_path, 'UL')
 
     # Get Silhouette Plot
-    apr_functions_ul.plot_Silhouette(x, 2, 12, True, image_file_name, save_path)
+    plot_functions.plot_Silhouette(x, 2, 12, True, image_file_name, save_path)
 
 
 def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_features=[],

@@ -11,8 +11,6 @@ MFCC_LIST = [13, 20, 40]
 
 for num_mfcc in MFCC_LIST:
     for dataset_path in DATASET_LIST:
-        num_files = '1'
-        num_genres = 'Jazz'
         genre = os.listdir(dataset_path)
         data = pd.DataFrame(
             columns=['filename', 'genre', 'path', 'tempo', 'energy', 'energy_entropy', 'rmse',
