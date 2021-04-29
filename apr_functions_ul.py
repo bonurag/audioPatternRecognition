@@ -96,8 +96,8 @@ def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=T
     principalDf = pd.DataFrame(data=principalComponents, columns=columnsComponents)
 
     componentsValue = "Component" if numOfComponents == 1 else "Components"
-    print('PCA Variance Ratio For {} {}: {}'.format(numOfComponents, componentsValue,
-                                                    pca.explained_variance_ratio_.sum()))
+    # print('PCA Variance Ratio For {} {}: {}'.format(numOfComponents, componentsValue,
+    #                                                 pca.explained_variance_ratio_.sum()))
 
     # Transform Clusters Centroids
     c_transformed = pca_fit.transform(centroidsValue)
@@ -127,7 +127,7 @@ def runKmeans(inputData, clustersNumber=1, randomState=10, modelFileName=apr_con
     labels = kmean.labels_
     centroids = kmean.cluster_centers_
     executionTime = time.time() - start_time
-    print('EXECUTION TIME: %s Sec' % executionTime)
+    # print('EXECUTION TIME: %s Sec' % executionTime)
     return labels, centroids
 
 

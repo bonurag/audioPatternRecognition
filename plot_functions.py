@@ -18,7 +18,8 @@ import apr_constants
 import common_functions
 
 
-def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME,
+                            savePath=apr_constants.PROJECT_ROOT):
     plt.figure(figsize=(12, 12))
     sns.set(font_scale=1.4)
     sns.heatmap(correlation_matrix, cmap='coolwarm', square=True)
@@ -26,11 +27,12 @@ def plot_correlation_matrix(correlation_matrix, savePlot=True, fileName=apr_cons
     if savePlot:
         print('Save Correlation Matrix')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'Correlation Matrix.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'Correlation Matrix.jpg')
     plt.show()
 
 
-def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME,
+             savePath=apr_constants.PROJECT_ROOT):
     plt.figure(figsize=(20, 10))
     new_data = inputPCAData.copy()
     genres = target_names
@@ -52,11 +54,12 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constan
     if savePlot:
         print('Save PCA Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'PCA Scatter Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'PCA Scatter Plot.jpg')
     plt.show()
 
 
-def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE_NAME,
+                savePath=apr_constants.PROJECT_ROOT):
     # initialize figure and 3d projection for the PC3 data
     fig = plt.figure(figsize=(15, 12))
     ax = fig.add_subplot(111, projection='3d')
@@ -80,7 +83,7 @@ def plot_3D_PCA(inputPCAData, savePlot=True, fileName=apr_constants.DEFAULT_FILE
     if savePlot:
         print('Save 3D PCA Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'PCA 3D Scattert Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'PCA 3D Scattert Plot.jpg')
     plt.show()
 
 
@@ -112,11 +115,12 @@ def plot_Clusters(inputPCAData, centroidsValue=[], labels=[], colors_list=[], ge
     if savePlot:
         print('Save Clusters Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'Clusters Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'Clusters Plot.jpg')
     plt.show()
 
 
-def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_names=[],
+                                 fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     inputData['predicted_label'] = labels
     data = metrics.confusion_matrix(inputData['genre'], inputData['predicted_label'])
     df_cm = pd.DataFrame(data, columns=np.unique(target_names), index=np.unique(target_names))
@@ -130,11 +134,12 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
     if savePlot:
         print('Save K-means Confusion Matrix')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'K-means Confusion Matrix Plot.jpg')
     plt.show()
 
 
-def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME,
+                    savePath=apr_constants.PROJECT_ROOT):
     eval_data = inputData.copy()
     silhouette_score_values = list()
     executiontime_values = list()
@@ -223,9 +228,9 @@ def plot_Silhouette(inputData, minClusters=2, maxClutsers=5, savePlot=False, fil
     if savePlot:
         print('Save Silhouette Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'Clusters Silhouette Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'Clusters Silhouette Plot.jpg')
     plt.show()
-    print("Optimal number of components is:", Optimal_NumberOf_Components)
+    # print("Optimal number of components is:", Optimal_NumberOf_Components)
 
 
 def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False, target_names=[],
@@ -261,13 +266,14 @@ def plot_roc(y_test, y_score, classifierName=apr_constants.DEFAULT_CLASSIFIER_NA
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate (FPR)', fontsize=24)
     plt.ylabel('True Positive Rate (TPR)', fontsize=24)
-    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
+    plt.title('Receiver operating characteristic for ' + classifierName.replace('_', ' ').upper(),
+              fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.legend(loc='lower right', prop={'size': apr_constants.LEGEND_SIZE})
 
     if savePlot:
         print('Save ROC Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'ROC Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'ROC Plot.jpg')
     plt.show()
 
 
@@ -280,16 +286,17 @@ def plot_Classification_Report(inputData, exportJSON=True, labels=[], target_nam
         report_dic = True
     report = metrics.classification_report(inputData['genre'], inputData['predicted_label'], target_names=target_names,
                                            output_dict=report_dic)
-    print('results_reports: ', report)
+    # print('results_reports: ', report)
 
     if exportJSON:
-        common_functions.check_create_directory(savePath+apr_constants.DATA)
-        with open(savePath+apr_constants.DATA+fileName + '_report_results.json', 'w') as res:
+        common_functions.check_create_directory(savePath + apr_constants.DATA)
+        with open(savePath + apr_constants.DATA + fileName + '_report_results.json', 'w') as res:
             json.dump(report, res, indent=4)
     plt.show()
 
 
-def plot_BPM_Bar(inputData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_BPM_Bar(inputData, savePlot=False, target_names=[], fileName=apr_constants.DEFAULT_FILE_NAME,
+                 savePath=apr_constants.PROJECT_ROOT):
     plt.figure(figsize=(15, 7))
     new_data = inputData[['genre', 'tempo']].copy()
     if len(target_names) == 10:
@@ -312,12 +319,13 @@ def plot_BPM_Bar(inputData, savePlot=False, target_names=[], fileName=apr_consta
     if savePlot:
         print('Save BPM Bar')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'BPM BoxPlot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'BPM BoxPlot.jpg')
     plt.show()
 
 
-def plot_confusion_matrix(clf, X_test, y_test, classes, normalize='true', classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False,
-            fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_confusion_matrix(clf, X_test, y_test, classes, normalize='true',
+                          classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, savePlot=False,
+                          fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     fig, ax = plt.subplots(figsize=(10, 10))
     metrics.plot_confusion_matrix(clf, X_test, y_test, normalize=normalize, cmap=plt.cm.Blues, ax=ax,
                                   display_labels=classes, values_format='.0f')
@@ -327,17 +335,20 @@ def plot_confusion_matrix(clf, X_test, y_test, classes, normalize='true', classi
     if savePlot:
         print('Save Confusion Matrix Plot')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'Confusion Matrix Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'Confusion Matrix Plot.jpg')
     plt.show()
 
 
-def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME,
-                             savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[],
+                             classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME,
+                             savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME,
+                             savePath=apr_constants.PROJECT_ROOT):
     genres = target_names
     calc_cm = metrics.confusion_matrix(y_test, y_pred, normalize=normalize_cm)
     bar = pd.DataFrame(calc_cm, columns=genres, index=genres)
     ax = bar.plot(kind='bar', figsize=(15, 15), fontsize=14, width=0.8)
-    plt.title('Musical Genres BarPlot Predictions For ' + classifierName.replace('_', ' ').upper(), fontsize=apr_constants.TITLE_FONT_SIZE)
+    plt.title('Musical Genres BarPlot Predictions For ' + classifierName.replace('_', ' ').upper(),
+              fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xlabel('Musical Genres', fontsize=22)
     plt.xticks(rotation=45)
     plt.ylabel('Number of Occurrences', fontsize=22)
@@ -355,5 +366,25 @@ def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=[], clas
     if savePlot:
         print('Save Models Predictions Compare')
         common_functions.check_create_directory(savePath)
-        plt.savefig(savePath+fileName + ' - ' + 'Predictions Compare Plot.jpg')
+        plt.savefig(savePath + fileName + ' - ' + 'Predictions Compare Plot.jpg')
+    plt.show()
+
+
+def plot_predictions_simple_compare(inputData, target_names=[],
+                                    savePlot=False, fileName=apr_constants.DEFAULT_FILE_NAME,
+                                    savePath=apr_constants.PROJECT_ROOT):
+    ax = inputData.plot(kind="bar", figsize=(15, 15), fontsize=14, width=0.6)
+    ax.set_xticklabels(target_names)
+    ax.legend(["Real Value", "Predict Value"])
+    plt.title('Simple BarPlot Predictions Evaluation', fontsize=26)
+    plt.xlabel('Musical Genres', fontsize=18)
+    plt.ylabel('Number of Occurrences', fontsize=18)
+    for p in ax.patches:
+        ax.annotate(format(p.get_height()),
+                    (p.get_x() + (p.get_width() / 2) + 0.015, p.get_height() + 5), ha='center', va='center',
+                    size=18, xytext=(0, 8), textcoords='offset points', fontsize=14, rotation=90)
+    if savePlot:
+        print('Save Simple Models Predictions Compare')
+        common_functions.check_create_directory(savePath)
+        plt.savefig(savePath+fileName + ' - ' + 'Simple Predictions Compare Plot.jpg')
     plt.show()

@@ -25,8 +25,10 @@ RESULTS_TIME_DOMAIN_FEATURES = 'results_time_domain_features/'
 MODEL = 'Model/'
 DATA = 'Data/'
 TEST = 'Test/'
+PLOT = 'Plot/'
 
 SUPERVISED_LEARNING = 'Supervised_Learning/'
 UNSUPERVISED_LEARNING = 'Unsupervised_Learning/'
 
 ROOT_SAVE_PATH = 'export_results/'
+ROOT_SAVE_PATH_TEST_MODEL = 'test_model/'

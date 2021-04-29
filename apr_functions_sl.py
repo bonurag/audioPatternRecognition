@@ -122,25 +122,25 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     if not os.path.exists(savePath+apr_constants.MODEL):
         os.makedirs(savePath+apr_constants.MODEL)
     common_functions.save_model(clf, savePath+apr_constants.MODEL+fileName)
-    print()
+    # print()
     if plotConfMatrix:
         plot_functions.plot_confusion_matrix(clf, X_test, y_test, genres, None, classifierName, True, fileName, savePath)
 
-    print()
+    # print()
     if plotRoc:
         plot_functions.plot_roc(y_test, y_score, classifierName, True, genres, fileName, savePath)
 
-    print()
+    # print()
     if predictionsCompare:
         plot_functions.plot_predictions_compare(None, y_test, y_pred, genres, classifierName, True, fileName, savePath)
 
-    print()
+    # print()
     executionTime = time.time() - start_time
     single_metrics, report = calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, genres)
 
-    print(f'CLASSIFICATION REPORT:\n{report}')
-    print('EXECUTION TIME: %s Sec' % executionTime)
-    print()
+    # print(f'CLASSIFICATION REPORT:\n{report}')
+    # print('EXECUTION TIME: %s Sec' % executionTime)
+    # print()
     return single_metrics, report
 
 
@@ -210,13 +210,13 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, exportCSV=Tr
                                                   image_file_name, savePath)
         all_models_results[model_name] = single_data_result
         all_models_reports[model_name] = report
-    print()
-    print(f'CLASSIFICATION MODELS RESULTS:')
+    # print()
+    # print(f'CLASSIFICATION MODELS RESULTS:')
     rows, columns = dictionaryToDataFrame(all_models_results, columns_DataFrame)
 
     results = pd.DataFrame(rows, columns=columns)
     results_reports = pd.DataFrame.from_dict(all_models_reports)
-    print('results_reports: ', results_reports)
+    # print('results_reports: ', results_reports)
     if exportCSV:
         if not os.path.exists(savePath+apr_constants.DATA):
             os.makedirs(savePath+apr_constants.DATA)
