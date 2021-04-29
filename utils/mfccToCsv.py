@@ -57,5 +57,5 @@ for num_mfcc in MFCC_LIST:
 
         FILE_NAME = str(num_mfcc) + 'MFCC_' + num_files + '_' + num_genres + '_GTZAN.csv'
         SAVE_ROOT = 'test_model/results/' + str(dataset_path) + '/'
-        data.to_csv(SAVE_ROOT+FILE_NAME)
+
         data.head()

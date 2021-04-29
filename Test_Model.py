@@ -56,7 +56,7 @@ if __name__ == "__main__":
                                             True, 'Complex Test Model Evaluation', SAVE_ROOT+apr_constants.PLOT)
 
     plot_functions.plot_predictions_simple_compare(visual_data, common_functions.get_genres(),
-                                                   True, 'Simple Test Model Evaluation', SAVE_ROOT+apr_constants.PLOT)
+                                                   True, 'Simple Test Model Evaluation', +apr_constants.PLOT)
 
     if not os.path.exists(SAVE_ROOT+apr_constants.DATA):
         os.makedirs(SAVE_ROOT+apr_constants.DATA)
