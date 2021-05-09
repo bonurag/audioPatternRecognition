@@ -53,15 +53,15 @@ if __name__ == "__main__":
     visual_data[['Genre', 'Predict_Value']] = data[['real_genre_text', 'predict_genre_text']].groupby(['predict_genre_text'], as_index=False).count()
 
     plot_functions.plot_predictions_compare(None, y_test, result, common_functions.get_genres(), 'Random_Forest',
-                                            True, 'Complex Test Model Evaluation', SAVE_ROOT+apr_constants.PLOT)
+                                            True, 'Complex Test Model Evaluation', SAVE_ROOT + apr_constants.PLOT)
 
     plot_functions.plot_predictions_simple_compare(visual_data, common_functions.get_genres(),
-                                                   True, 'Simple Test Model Evaluation', +apr_constants.PLOT)
+                                                   True, 'Simple Test Model Evaluation', SAVE_ROOT + apr_constants.PLOT)
 
-    if not os.path.exists(SAVE_ROOT+apr_constants.DATA):
-        os.makedirs(SAVE_ROOT+apr_constants.DATA)
-    data.to_csv(SAVE_ROOT+apr_constants.DATA+FILE_NAME, index=False)
-    visual_data.to_csv(SAVE_ROOT+apr_constants.DATA+FILE_NAME_COUNT, index=False)
+    if not os.path.exists(SAVE_ROOT + apr_constants.DATA):
+        os.makedirs(SAVE_ROOT + apr_constants.DATA)
+    data.to_csv(SAVE_ROOT + apr_constants.DATA + FILE_NAME, index=False)
+    visual_data.to_csv(SAVE_ROOT + apr_constants.DATA + FILE_NAME_COUNT, index=False)
     executionTime = time.time() - start_time
     print('Save CSV!')
     print('Execution Time: ', executionTime)

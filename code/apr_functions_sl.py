@@ -60,15 +60,15 @@ def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot
            fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     # PCA Components #
     pca = PCA(n_components=numOfComponents)
-    principalComponents = pca.fit_transform(inputData)
-    principalDf = pd.DataFrame(data=principalComponents, columns=['PC1', 'PC2'])
+    principal_components = pca.fit_transform(inputData)
+    principal_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
 
     # Concatenate With Target Label
-    concatData = pd.concat([principalDf, inputColumns], axis=1)
+    concat_data = pd.concat([principal_df, inputColumns], axis=1)
 
     if plotMatrix:
-        plot_functions.plot_PCA(concatData, savePlot, target_names, fileName, savePath)
-    return concatData
+        plot_functions.plot_PCA(concat_data[['PC1', 'PC2', 'genre']], savePlot, target_names, fileName, savePath)
+    return concat_data
 
 
 def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, target_names):
@@ -119,9 +119,9 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     y_pred = clf.predict(X_test)
     y_proba = clf.predict_proba(X_test)
 
-    if not os.path.exists(savePath+apr_constants.MODEL):
-        os.makedirs(savePath+apr_constants.MODEL)
-    common_functions.save_model(clf, savePath+apr_constants.MODEL+fileName)
+    if not os.path.exists(savePath + apr_constants.MODEL):
+        os.makedirs(savePath + apr_constants.MODEL)
+    common_functions.save_model(clf, savePath + apr_constants.MODEL + fileName)
     # print()
     if plotConfMatrix:
         plot_functions.plot_confusion_matrix(clf, X_test, y_test, genres, None, classifierName, True, fileName, savePath)
@@ -218,15 +218,15 @@ def getResults(classifier_models, X_train, X_test, y_train, y_test, exportCSV=Tr
     results_reports = pd.DataFrame.from_dict(all_models_reports)
     # print('results_reports: ', results_reports)
     if exportCSV:
-        if not os.path.exists(savePath+apr_constants.DATA):
-            os.makedirs(savePath+apr_constants.DATA)
-        results.to_csv(savePath+apr_constants.DATA+fileName + '_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
-        results_reports.to_csv(savePath+apr_constants.DATA+fileName + '_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+        if not os.path.exists(savePath + apr_constants.DATA):
+            os.makedirs(savePath + apr_constants.DATA)
+        results.to_csv(savePath + apr_constants.DATA + fileName + '_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
+        results_reports.to_csv(savePath + apr_constants.DATA + fileName + '_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
     if exportJSON:
-        if not os.path.exists(savePath+apr_constants.DATA):
-            os.makedirs(savePath+apr_constants.DATA)
-        with open(savePath+apr_constants.DATA+fileName + '_results.json', 'w') as res:
+        if not os.path.exists(savePath + apr_constants.DATA):
+            os.makedirs(savePath + apr_constants.DATA)
+        with open(savePath + apr_constants.DATA + fileName + '_results.json', 'w') as res:
             json.dump(all_models_results, res, indent=4)
-        with open(savePath+apr_constants.DATA+fileName + '_reports_results.json', 'w') as rep:
+        with open(savePath + apr_constants.DATA + fileName + '_reports_results.json', 'w') as rep:
             json.dump(all_models_reports, rep, indent=4)
     return results

@@ -54,8 +54,8 @@ def load_model(inputPath, inputFileName):
 def prepare_datasets(X, y, test_size=0.3, fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     # create train, test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=100)
-    common_functions.check_create_directory(savePath+apr_constants.TEST)
-    save_test_data(X_test, y_test, savePath+apr_constants.TEST+fileName)
+    common_functions.check_create_directory(savePath + apr_constants.TEST)
+    save_test_data(X_test, y_test, savePath + apr_constants.TEST + fileName)
     return X_train, X_test, y_train, y_test
 
 

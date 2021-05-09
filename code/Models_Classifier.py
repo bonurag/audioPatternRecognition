@@ -33,7 +33,7 @@ def init_data_and_model_sl(input_file_path, features_to_drop, image_file_name, s
                                 common_functions.get_genres(), image_file_name, save_path)
 
 
-def init_data_and_model_ul(input_file_path, features_to_drop, image_file_name, save_path):
+def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_file_name, save_path):
     # Load Data
     x, y, df = apr_functions_ul.load_data(input_file_path, 'min_max', False, features_to_drop)
 
@@ -41,27 +41,31 @@ def init_data_and_model_ul(input_file_path, features_to_drop, image_file_name, s
     common_functions.getCorrelatedFeatures(x, 0.7, True, True, True, image_file_name, save_path)
 
     # Get PCA Variance Ratio
-    apr_functions_ul.getPCA_VarRatio_Plot(x, True, image_file_name, save_path)
+    pca_components_to_use = apr_functions_ul.getPCA_VarRatio_Plot(x, 0.8, True, image_file_name, save_path)
 
     # Get K-means results
-    labels, centroids = apr_functions_ul.runKmeans(x, 10, 20, image_file_name, save_path)
+    labels, predict_clusters, centroids, k_means = apr_functions_ul.run_kmeans(x, 10, 20, image_file_name, save_path)
 
     # Get PCA and Plot
-    num_components = 2
-    if num_components == 2:
-        pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, num_components, True, True,
+    if type_plot == '2D':
+        pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot, True,
                                                                    common_functions.get_genres(), image_file_name,
                                                                    save_path,
                                                                    centroids)
-    elif num_components == 3:
-        pca_data = apr_functions_ul.getPCAWithCentroids(x, y, num_components, True, True,
+
+        # Get Clusters Plot
+        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], centroids, labels, apr_constants.COLORS_LIST,
+                                     common_functions.get_genres(), True, True, image_file_name, save_path)
+
+    elif type_plot == '3D':
+        pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot, True,
                                                         common_functions.get_genres(), image_file_name,
                                                         save_path,
                                                         centroids)
 
-    # Get Clusters Plot
-    plot_functions.plot_Clusters(pca_data, centroids, labels, apr_constants.COLORS_LIST,
-                                 common_functions.get_genres(), True, True, image_file_name, save_path)
+        # Get Clusters Plot
+        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], centroids, labels, apr_constants.COLORS_LIST,
+                                     common_functions.get_genres(), True, True, image_file_name, save_path)
 
     # Get K-means Confusion Matrix Plot
     plot_functions.plot_confusion_matrix_kmeans(df, True, labels, common_functions.get_genres(), image_file_name, save_path)
@@ -81,6 +85,7 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
     features_to_drop = []
     drop_frequency_features_check = False
     drop_time_features_check = False
+    ul_type_plot = '2D'
 
     try:
         if len(drop_time_features) > 0 and len(drop_frequency_features) == 0:
@@ -111,7 +116,7 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
                 init_data_and_model_sl(file_path, features_to_drop, image_file_name, save_path)
             elif type_learning == 'UL':
                 save_path += apr_constants.UNSUPERVISED_LEARNING + str(result_folder) + str(mfcc_value) + '/'
-                init_data_and_model_ul(file_path, features_to_drop, image_file_name, save_path)
+                init_data_and_model_ul(file_path, features_to_drop, ul_type_plot, image_file_name, save_path)
         else:
             if drop_frequency_features_check:
                 for num_mfcc in range(int(mfcc_value)):
@@ -123,9 +128,9 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
                 break
             elif type_learning == 'UL':
                 save_path += apr_constants.UNSUPERVISED_LEARNING + apr_constants.RESULTS_TIME_DOMAIN_FEATURES
-                init_data_and_model_ul(file_path, features_to_drop, image_file_name, save_path)
+                init_data_and_model_ul(file_path, features_to_drop, ul_type_plot, image_file_name, save_path)
                 break
 
 
 if __name__ == "__main__":
-    start_evaluation(dataset_path, type_learning='SL')
+    start_evaluation(dataset_path, drop_frequency_features=apr_constants.FREQUENCY_DOMAIN_FEATURES, type_learning='SL')

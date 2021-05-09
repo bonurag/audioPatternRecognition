@@ -36,11 +36,11 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constan
     plt.figure(figsize=(20, 10))
     new_data = inputPCAData.copy()
     genres = target_names
-    if len(target_names) == 10:
-        genres = {i: target_names[i] for i in range(0, len(target_names))}
-    elif len(target_names) == 5:
-        genres = {i: target_names[i] for i in range(0, len(target_names))}
-
+    # if len(target_names) == 10:
+    #     genres = {i: target_names[i] for i in range(0, len(target_names))}
+    # elif len(target_names) == 5:
+    #     genres = {i: target_names[i] for i in range(0, len(target_names))}
+    genres = {i: target_names[i] for i in range(0, len(target_names))}
     new_data.genre = [genres[int(item)] for item in new_data.genre]
 
     sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep')
@@ -123,9 +123,11 @@ def plot_confusion_matrix_kmeans(inputData, savePlot=True, labels=[], target_nam
                                  fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
     inputData['predicted_label'] = labels
     data = metrics.confusion_matrix(inputData['genre'], inputData['predicted_label'])
+
     df_cm = pd.DataFrame(data, columns=np.unique(target_names), index=np.unique(target_names))
     df_cm.index.name = 'Actual'
     df_cm.columns.name = 'Predicted'
+
     plt.figure(figsize=(10, 10))
     sns.set(font_scale=1.4)
     heatmap = sns.heatmap(df_cm, cmap="Blues", annot=True, fmt='g', annot_kws={"size": 8}, square=True)
