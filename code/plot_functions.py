@@ -35,11 +35,7 @@ def plot_PCA(inputPCAData, savePlot=False, target_names=[], fileName=apr_constan
              savePath=apr_constants.PROJECT_ROOT):
     plt.figure(figsize=(20, 10))
     new_data = inputPCAData.copy()
-    genres = target_names
-    # if len(target_names) == 10:
-    #     genres = {i: target_names[i] for i in range(0, len(target_names))}
-    # elif len(target_names) == 5:
-    #     genres = {i: target_names[i] for i in range(0, len(target_names))}
+
     genres = {i: target_names[i] for i in range(0, len(target_names))}
     new_data.genre = [genres[int(item)] for item in new_data.genre]
 

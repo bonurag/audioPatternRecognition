@@ -48,33 +48,40 @@ def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_f
 
     # Get PCA and Plot
     if type_plot == '2D':
-        pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot, True,
-                                                                   common_functions.get_genres(), image_file_name,
-                                                                   save_path,
-                                                                   centroids)
+        pca_data, pca_centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot,
+                                                                       True,
+                                                                       common_functions.get_genres(), image_file_name,
+                                                                       save_path,
+                                                                       centroids)
 
         # Get Clusters Plot
-        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], centroids, labels, apr_constants.COLORS_LIST,
+        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], pca_centroids, labels,
+                                     apr_constants.COLORS_LIST,
                                      common_functions.get_genres(), True, True, image_file_name, save_path)
 
     elif type_plot == '3D':
-        pca_data, centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot, True,
-                                                        common_functions.get_genres(), image_file_name,
-                                                        save_path,
-                                                        centroids)
+        pca_data, pca_centroids = apr_functions_ul.getPCAWithCentroids(x, y, pca_components_to_use, True, type_plot,
+                                                                       True,
+                                                                       common_functions.get_genres(), image_file_name,
+                                                                       save_path,
+                                                                       centroids)
 
         # Get Clusters Plot
-        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], centroids, labels, apr_constants.COLORS_LIST,
+        plot_functions.plot_Clusters(pca_data[['PC1', 'PC2', 'genre']], pca_centroids, labels,
+                                     apr_constants.COLORS_LIST,
                                      common_functions.get_genres(), True, True, image_file_name, save_path)
 
     # Get K-means Confusion Matrix Plot
-    plot_functions.plot_confusion_matrix_kmeans(df, True, labels, common_functions.get_genres(), image_file_name, save_path)
+    plot_functions.plot_confusion_matrix_kmeans(df, True, labels, common_functions.get_genres(), image_file_name,
+                                                save_path)
 
     # Get K-means Classification Report
-    plot_functions.plot_Classification_Report(df, True, labels, common_functions.get_genres(), image_file_name, save_path)
+    plot_functions.plot_Classification_Report(df, True, labels, common_functions.get_genres(), image_file_name,
+                                              save_path)
 
     # Get ROC Plot
-    plot_functions.plot_roc(y.values, labels, 'K-Means', True, common_functions.get_genres(), image_file_name, save_path, 'UL')
+    plot_functions.plot_roc(y.values, labels, 'K-Means', True, common_functions.get_genres(), image_file_name,
+                            save_path, 'UL')
 
     # Get Silhouette Plot
     plot_functions.plot_Silhouette(x, 2, 12, True, image_file_name, save_path)

@@ -32,4 +32,4 @@ UNSUPERVISED_LEARNING = 'Unsupervised_Learning/'
 
 ROOT_SAVE_PATH = 'export_results/'
 ROOT_SAVE_PATH_TEST_MODEL = 'test_model/'
-ROOT_SAVE_PATH_NOTEBOOKS = 'notebooks_results/'
+ROOT_SAVE_PATH_NOTEBOOKS = 'Notebooks_Results/'

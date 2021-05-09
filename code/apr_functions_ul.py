@@ -113,23 +113,10 @@ def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=T
     print('PCA Variance Ratio For {} {}: {}'.format(numOfComponents, components_value,
                                                     pca.explained_variance_ratio_.sum()))
 
-    # Transform Clusters Centroids
-    # c_transformed = pca_fit.transform(centroidsValue)
-
     # Concatenate With Target Label
-    # frames = [principalDf, columnData]
-    # concatData = pd.concat(frames)
-
-    # if numOfComponents == 2:
-    #     if plotMatrix:
-    #         plot_functions.plot_PCA(concatData, savePlot, target_names, fileName, savePath)
-    #     return concatData, c_transformed
-    # elif numOfComponents == 3:
-    #     if plotMatrix:
-    #         plot_functions.plot_3D_PCA(concatData, savePlot, fileName, savePath)
-    # else:
-    #     return concatData
     concat_data = pd.concat([principal_df.reset_index(drop=True), column_data.reset_index(drop=True)], axis=1)
+
+    # Transform Clusters Centroids
     c_transformed = pca_fit.transform(centroidsValue)
     if type_plot == '2D':
         if plotMatrix:
@@ -141,16 +128,18 @@ def getPCAWithCentroids(inputData, inputColumns, numOfComponents=1, plotMatrix=T
         return concat_data, c_transformed
 
 
-def run_kmeans(inputData, clustersNumber=1, randomState=10, modelFileName=apr_constants.DEFAULT_FILE_NAME,
-              savePath=apr_constants.PROJECT_ROOT):
-    k_means = KMeans(clustersNumber, random_state=randomState)
-    k_means.fit(inputData)
+def run_kmeans(input_data, clusters_number=1, random_state=10, save_model=True,
+               model_file_name=apr_constants.DEFAULT_FILE_NAME,
+               save_path=apr_constants.PROJECT_ROOT):
+    k_means = KMeans(clusters_number, random_state=random_state)
+    k_means.fit(input_data)
     labels = k_means.labels_
     centroids = k_means.cluster_centers_
-    predict_clust = k_means.predict(inputData)
-    common_functions.check_create_directory(savePath + apr_constants.MODEL)
-    common_functions.save_model(k_means, savePath + apr_constants.MODEL + modelFileName)
-    return labels, predict_clust, centroids, k_means
+    predict_clusters = k_means.predict(input_data)
+    if save_model:
+        common_functions.check_create_directory(save_path + apr_constants.MODEL)
+        common_functions.save_model(k_means, save_path + apr_constants.MODEL + model_file_name)
+    return labels, predict_clusters, centroids, k_means
 
 
 def get_permutation(input_list, num_element):
