@@ -10,7 +10,13 @@ Various classifiers were used and related to each other in order to evaluate the
 Content of the repository:
 
 |-- code/<br/>
-|-- Models_Classifier # Main class that given a series of features csv files, allows extract model, test data e plot of metrics.<br/>
+|-- Models_Classifier # Main class that given a series of features csv files, allows extracting model, test data e plot of metrics.<br/>
+|-- apr_constants # Class that contains the constants and fix path used in project.<br/>
+|-- apr_functions_sl # Class that contains functions used only for supervised learning approach.<br/>
+|-- apr_functions_ul # Class that contains functions used only for unsupervised learning approach.<br/>
+|-- common_functions # Class that contains functions used only for both approach.<br/>
+|-- plot_functions # Class that contains functions for plot graph.<br/>
+|-- Test_Model # Class used to test the chosen classifier model.<br/>
 |---------- code/utils<br/>
 |----------------- featuresToCsv # Used for extract audio features and create a CSV file.<br/>
 |----------------- features_functions # Custom functions for extract entropy and entropy energy from audio.<br/>

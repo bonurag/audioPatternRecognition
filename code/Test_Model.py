@@ -12,7 +12,7 @@ import apr_constants
 
 MODEL_FILE_NAME = 'RF_20MFCC_10000_10GEN_GTZAN_Model'
 TEST_FILE_NAME = '20MFCC_10000_10GEN_GTZAN_TestData'
-MFCCS_FOLDER = '20'
+NUM_MFCC_FOLDER = '20'
 
 SAVE_ROOT = apr_constants.ROOT_SAVE_PATH_TEST_MODEL
 
@@ -27,8 +27,8 @@ if __name__ == "__main__":
         shutil.rmtree(SAVE_ROOT)
         print('Folder Deleted!')
 
-    model_path = apr_constants.ROOT_SAVE_PATH + apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_ALL_FEATURES + MFCCS_FOLDER + '/' + apr_constants.MODEL
-    test_path = apr_constants.ROOT_SAVE_PATH + apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_ALL_FEATURES + MFCCS_FOLDER + '/' + apr_constants.TEST
+    model_path = apr_constants.ROOT_SAVE_PATH + apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_ALL_FEATURES + NUM_MFCC_FOLDER + '/' + apr_constants.MODEL
+    test_path = apr_constants.ROOT_SAVE_PATH + apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_ALL_FEATURES + NUM_MFCC_FOLDER + '/' + apr_constants.TEST
 
     # Load the model from disk
     load_model = common_functions.load_model(model_path, MODEL_FILE_NAME)

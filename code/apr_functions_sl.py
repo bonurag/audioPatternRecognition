@@ -20,13 +20,15 @@ import plot_functions
 import common_functions
 
 
-def load_data(data_path, normalization='std', removeNullValue=True, columnsToDrop=[]):
+def load_data(data_path, normalization='std', remove_null_value=True, columns_to_drop=None):
+    if columns_to_drop is None:
+        columns_to_drop = []
     df = pd.read_csv(data_path)
 
-    if columnsToDrop:
-        df = df.drop(columns=columnsToDrop)
+    if columns_to_drop:
+        df = df.drop(columns=columns_to_drop)
 
-    if removeNullValue:
+    if remove_null_value:
         for check in df.isnull().sum().sort_values(ascending=False):
             if check > 0:
                 df = df.fillna(0)
@@ -36,42 +38,44 @@ def load_data(data_path, normalization='std', removeNullValue=True, columnsToDro
 
     # Split df into x and Y
     target_col = 'genre'
-    X = df.loc[:, df.columns != target_col]
+    x = df.loc[:, df.columns != target_col]
     y = df.loc[:, target_col]
 
-    x_cols = X.columns
+    x_cols = x.columns
     if normalization == 'std':
         # NORMALIZE X WITH STANDARD SCALER #
         resized_data = preprocessing.StandardScaler()
-        np_scaled = resized_data.fit_transform(X)
+        np_scaled = resized_data.fit_transform(x)
     elif normalization == 'min_max':
         # NORMALIZE X WITH Min Max SCALER #
         resized_data = preprocessing.MinMaxScaler()
-        np_scaled = resized_data.fit_transform(X)
-    elif normalization == None:
-        np_scaled = X
+        np_scaled = resized_data.fit_transform(x)
+    elif normalization is None:
+        np_scaled = x
 
-    X = pd.DataFrame(np_scaled, columns=x_cols)
+    x = pd.DataFrame(np_scaled, columns=x_cols)
 
-    return X, y, df
+    return x, y, df
 
 
-def getPCA(inputData, inputColumns, numOfComponents=1, plotMatrix=True, savePlot=False, target_names=[],
-           fileName=apr_constants.DEFAULT_FILE_NAME, savePath=apr_constants.PROJECT_ROOT):
+def get_pca(input_data, input_columns, num_components=1, plot_matrix=True, save_plot=False, target_names=None,
+            file_name=apr_constants.DEFAULT_FILE_NAME, save_path=apr_constants.PROJECT_ROOT):
     # PCA Components #
-    pca = PCA(n_components=numOfComponents)
-    principal_components = pca.fit_transform(inputData)
+    if target_names is None:
+        target_names = []
+    pca = PCA(n_components=num_components)
+    principal_components = pca.fit_transform(input_data)
     principal_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
 
     # Concatenate With Target Label
-    concat_data = pd.concat([principal_df, inputColumns], axis=1)
+    concat_data = pd.concat([principal_df, input_columns], axis=1)
 
-    if plotMatrix:
-        plot_functions.plot_PCA(concat_data[['PC1', 'PC2', 'genre']], savePlot, target_names, fileName, savePath)
+    if plot_matrix:
+        plot_functions.plot_pca(concat_data[['PC1', 'PC2', 'genre']], save_plot, target_names, file_name, save_path)
     return concat_data
 
 
-def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, target_names):
+def calculate_metrics(y_test, y_pred, y_proba, execution_time, classifier_name, target_names):
     single_metrics = {
         'single_results': {}
     }
@@ -87,7 +91,7 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
     precision_score = metrics.precision_score(y_test, y_pred, average='weighted')
     recall_score = metrics.recall_score(y_test, y_pred, average='weighted')
 
-    single_metrics['single_results']['CLASSIFIER_NAME'] = classifierName
+    single_metrics['single_results']['CLASSIFIER_NAME'] = classifier_name
     single_metrics['single_results']['ACC'] = accuracy
     single_metrics['single_results']['ERR'] = error_score
     single_metrics['single_results']['LOSS'] = loss
@@ -98,45 +102,49 @@ def calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, ta
     single_metrics['single_results']['WEIGHTED_F1_SCORE'] = f1_score
     single_metrics['single_results']['WEIGHTED_PRECISION'] = precision_score
     single_metrics['single_results']['WEIGHTED_RECALL'] = recall_score
-    single_metrics['single_results']['EXECUTION_TIME'] = executionTime
+    single_metrics['single_results']['EXECUTION_TIME'] = execution_time
 
     clf_report = metrics.classification_report(y_test, y_pred, target_names=target_names, output_dict=True)
     return single_metrics, clf_report
 
 
-def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMatrix=True, predictionsCompare=True,
-                 classifierName=apr_constants.DEFAULT_CLASSIFIER_NAME, usePredictProba=True, target_names=[],
-                 fileName=apr_constants.DEFAULT_FILE_NAME,
-                 savePath=apr_constants.PROJECT_ROOT):
+def model_assess(clf, x_train, x_test, y_train, y_test, plot_roc=True, plot_conf_matrix=True, predictions_compare=True,
+                 classifier_name=apr_constants.DEFAULT_CLASSIFIER_NAME, use_predict_proba=True, target_names=None,
+                 file_name=apr_constants.DEFAULT_FILE_NAME,
+                 save_path=apr_constants.PROJECT_ROOT):
+    if target_names is None:
+        target_names = []
     start_time = time.time()
     genres = target_names
-    if usePredictProba:
-        y_score = clf.fit(X_train, y_train).decision_function(X_test)
+    if use_predict_proba:
+        y_score = clf.fit(x_train, y_train).decision_function(x_test)
     else:
-        clf.fit(X_train, y_train)
-        y_score = clf.predict_proba(X_test)
+        clf.fit(x_train, y_train)
+        y_score = clf.predict_proba(x_test)
 
-    y_pred = clf.predict(X_test)
-    y_proba = clf.predict_proba(X_test)
+    y_pred = clf.predict(x_test)
+    y_proba = clf.predict_proba(x_test)
 
-    if not os.path.exists(savePath + apr_constants.MODEL):
-        os.makedirs(savePath + apr_constants.MODEL)
-    common_functions.save_model(clf, savePath + apr_constants.MODEL + fileName)
+    if not os.path.exists(save_path + apr_constants.MODEL):
+        os.makedirs(save_path + apr_constants.MODEL)
+    common_functions.save_model(clf, save_path + apr_constants.MODEL + file_name)
     # print()
-    if plotConfMatrix:
-        plot_functions.plot_confusion_matrix(clf, X_test, y_test, genres, None, classifierName, True, fileName, savePath)
-
-    # print()
-    if plotRoc:
-        plot_functions.plot_roc(y_test, y_score, classifierName, True, genres, fileName, savePath)
+    if plot_conf_matrix:
+        plot_functions.plot_confusion_matrix(clf, x_test, y_test, genres, None, classifier_name, True, file_name,
+                                             save_path)
 
     # print()
-    if predictionsCompare:
-        plot_functions.plot_predictions_compare(None, y_test, y_pred, genres, classifierName, True, fileName, savePath)
+    if plot_roc:
+        plot_functions.plot_roc(y_test, y_score, classifier_name, True, genres, file_name, save_path)
 
     # print()
-    executionTime = time.time() - start_time
-    single_metrics, report = calculate_metrics(y_test, y_pred, y_proba, executionTime, classifierName, genres)
+    if predictions_compare:
+        plot_functions.plot_predictions_compare(None, y_test, y_pred, genres, classifier_name, True, file_name,
+                                                save_path)
+
+    # print()
+    execution_time = time.time() - start_time
+    single_metrics, report = calculate_metrics(y_test, y_pred, y_proba, execution_time, classifier_name, genres)
 
     # print(f'CLASSIFICATION REPORT:\n{report}')
     # print('EXECUTION TIME: %s Sec' % executionTime)
@@ -144,19 +152,19 @@ def model_assess(clf, X_train, X_test, y_train, y_test, plotRoc=True, plotConfMa
     return single_metrics, report
 
 
-def dictionaryToDataFrame(inputData, columns):
+def dictionary_to_data_frame(input_data, columns):
     rows = []
-    for i in inputData.keys():
-        for j in inputData[i].keys():
-            single_row = inputData[i][j]
+    for i in input_data.keys():
+        for j in input_data[i].keys():
+            single_row = input_data[i][j]
             rows.append(single_row)
     return rows, columns
 
 
-def getModel(test_Model=False):
+def get_model(test_model=False):
     classifier_models = {'SVM': [], 'RF': [], 'ANN': []}
 
-    if test_Model:
+    if test_model:
         # Linear Support Vector Machine
         SVM_Classifier = SVC(C=10, kernel='rbf', probability=True, random_state=10)
         classifier_models.update({'SVM': SVM_Classifier})
@@ -189,44 +197,48 @@ def getModel(test_Model=False):
     return classifier_models
 
 
-def getResults(classifier_models, X_train, X_test, y_train, y_test, exportCSV=True,
-               exportJSON=True, target_names=[],
-               fileName=apr_constants.DEFAULT_FILE_NAME,
-               savePath=apr_constants.PROJECT_ROOT):
-    columns_DataFrame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE',
-                         'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
+def get_results(classifier_models, x_train, x_test, y_train, y_test, export_csv=True,
+                export_json=True, target_names=None,
+                file_name=apr_constants.DEFAULT_FILE_NAME,
+                save_path=apr_constants.PROJECT_ROOT):
+    if target_names is None:
+        target_names = []
+    columns__data_frame = ['CLASSIFIER_NAME', 'ACC', 'ERR', 'LOSS', 'K', 'MSE', 'RMSE', 'MAE', 'WEIGHTED_F1_SCORE',
+                           'WEIGHTED_PRECISION', 'WEIGHTED_RECALL', 'EXECUTION_TIME']
     all_models_results = {}
     all_models_reports = {}
     for key in classifier_models.keys():
         model_name = key
         if model_name == 'SVM':
-            usePredictProba = True
+            use_predict_proba = True
         elif model_name == 'RF' or model_name == 'ANN':
-            usePredictProba = False
-        image_file_name = model_name + '_' + fileName
-        single_data_result, report = model_assess(classifier_models.get(model_name), X_train, X_test, y_train, y_test,
+            use_predict_proba = False
+        image_file_name = model_name + '_' + file_name
+        single_data_result, report = model_assess(classifier_models.get(model_name), x_train, x_test, y_train, y_test,
                                                   True,
-                                                  True, True, model_name, usePredictProba, target_names,
-                                                  image_file_name, savePath)
+                                                  True, True, model_name, use_predict_proba, target_names,
+                                                  image_file_name, save_path)
         all_models_results[model_name] = single_data_result
         all_models_reports[model_name] = report
     # print()
     # print(f'CLASSIFICATION MODELS RESULTS:')
-    rows, columns = dictionaryToDataFrame(all_models_results, columns_DataFrame)
+    rows, columns = dictionary_to_data_frame(all_models_results, columns__data_frame)
 
     results = pd.DataFrame(rows, columns=columns)
     results_reports = pd.DataFrame.from_dict(all_models_reports)
     # print('results_reports: ', results_reports)
-    if exportCSV:
-        if not os.path.exists(savePath + apr_constants.DATA):
-            os.makedirs(savePath + apr_constants.DATA)
-        results.to_csv(savePath + apr_constants.DATA + fileName + '_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
-        results_reports.to_csv(savePath + apr_constants.DATA + fileName + '_reports_results.csv', index=False, header=True, sep='\t', encoding='utf-8')
-    if exportJSON:
-        if not os.path.exists(savePath + apr_constants.DATA):
-            os.makedirs(savePath + apr_constants.DATA)
-        with open(savePath + apr_constants.DATA + fileName + '_results.json', 'w') as res:
+    if export_csv:
+        if not os.path.exists(save_path + apr_constants.DATA):
+            os.makedirs(save_path + apr_constants.DATA)
+        results.to_csv(save_path + apr_constants.DATA + file_name + '_results.csv', index=False, header=True, sep='\t',
+                       encoding='utf-8')
+        results_reports.to_csv(save_path + apr_constants.DATA + file_name + '_reports_results.csv', index=False,
+                               header=True, sep='\t', encoding='utf-8')
+    if export_json:
+        if not os.path.exists(save_path + apr_constants.DATA):
+            os.makedirs(save_path + apr_constants.DATA)
+        with open(save_path + apr_constants.DATA + file_name + '_results.json', 'w') as res:
             json.dump(all_models_results, res, indent=4)
-        with open(savePath + apr_constants.DATA + fileName + '_reports_results.json', 'w') as rep:
+        with open(save_path + apr_constants.DATA + file_name + '_reports_results.json', 'w') as rep:
             json.dump(all_models_reports, rep, indent=4)
     return results
