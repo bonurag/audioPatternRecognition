@@ -1,0 +1,11 @@
+Genre,Real_Value,Predict_Value
+blues,326,304
+classical,292,316
+country,295,315
+disco,293,297
+hiphop,289,261
+jazz,329,331
+metal,298,320
+pop,276,302
+reggae,299,299
+rock,303,255
