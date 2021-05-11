@@ -10,7 +10,8 @@ Various classifiers were used and related to each other in order to evaluate the
 Content of the repository:
 
 |-- code/<br/>
+|-- Models_Classifier # Main class that given a series of features csv files, allows extract model, test data e plot of metrics.<br/>
 |---------- code/utils<br/>
 |----------------- featuresToCsv # Used for extract audio features and create a CSV file.<br/>
 |----------------- features_functions # Custom functions for extract entropy and entropy energy from audio.<br/>
-|----------------- preProcessData # Used for cut all sample in a specific length
+|----------------- preProcessData # Used for cut all sample in a specific length.<br/>

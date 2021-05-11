@@ -140,4 +140,4 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
 
 
 if __name__ == "__main__":
-    start_evaluation(dataset_path, drop_frequency_features=apr_constants.FREQUENCY_DOMAIN_FEATURES, type_learning='SL')
+    start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='SL')
