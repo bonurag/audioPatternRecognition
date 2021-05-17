@@ -14,6 +14,9 @@ import plot_functions
 
 from itertools import combinations
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 def load_data(data_path, normalization='std', remove_null_value=True, columns_to_drop=None):
     if columns_to_drop is None:
