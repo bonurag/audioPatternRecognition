@@ -1,7 +1,7 @@
 import os
 
 GENRE_TARGET_NAMES = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-COLORS_LIST = {'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'chocolate', 'skyblue', 'lime', 'cyan'}
+COLORS_LIST = {'red', 'blue', 'green', 'purple', 'orange', 'deeppink', 'skyblue', 'aquamarine', 'teal', 'dodgerblue'}
 ROC_COLOR_LIST = {'blue', 'red', 'green', 'darkorange', 'chocolate', 'lime', 'deepskyblue', 'silver', 'tomato',
                   'purple'}
 

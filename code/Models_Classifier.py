@@ -41,7 +41,7 @@ def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_f
     common_functions.get_correlated_features(x, 0.7, True, True, True, image_file_name, save_path)
 
     # Get PCA Variance Ratio
-    pca_components_to_use = apr_functions_ul.get_pca_var_ratio_plot(x, 0.8, True, image_file_name, save_path)
+    pca_components_to_use = apr_functions_ul.get_pca_var_ratio_plot(x, 0.8, True, True, image_file_name, save_path)
 
     # Get K-means results
     labels, predict_clusters, centroids, k_means = apr_functions_ul.run_k_means(x, 10, 20, image_file_name, save_path)

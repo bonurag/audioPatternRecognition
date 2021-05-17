@@ -6,13 +6,12 @@ from os import path
 import pandas as pd
 from tqdm import tqdm
 import features_functions
-import shutil
 
 # Create a csv file from data
 DATASET_PATH = 'genres_collections_new'
-EXCLUDE_FOLDER = {'source', 'source_files', 'sub_chunk_files'}
+EXCLUDE_FOLDER = {'results'}
 SAVE_ROOT = DATASET_PATH + '/results/'
-MFCC_VALUE = 20
+MFCC_VALUE = 13
 SAMPLE_DURATION = 30
 
 if __name__ == "__main__":

@@ -41,7 +41,7 @@ def plot_pca(input_pca_data, save_plot=False, target_names=None, file_name=apr_c
     genres = {i: target_names[i] for i in range(0, len(target_names))}
     new_data.genre = [genres[int(item)] for item in new_data.genre]
 
-    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette='deep')
+    sns.scatterplot(x='PC1', y='PC2', data=new_data, hue='genre', alpha=0.6, palette=apr_constants.COLORS_LIST, s=200)
 
     plt.title('PCA on Genres', fontsize=apr_constants.TITLE_FONT_SIZE)
     plt.xticks(fontsize=14)
@@ -95,26 +95,26 @@ def plot_clusters(input_pca_data, centroids_value=None, labels=None, colors_list
         labels = []
     if centroids_value is None:
         centroids_value = []
-    pca_1, pca_2 = input_pca_data['PC1'], input_pca_data['PC2']
-    centroids_x = centroids_value[:, 0]
-    centroids_y = centroids_value[:, 1]
+    pca_1, pca_2, gen = input_pca_data['PC1'], input_pca_data['PC2'], input_pca_data['genre']
 
     colors = {v: k for v, k in enumerate(colors_list)}
     genres = {v: k for v, k in enumerate(genres_list)}
 
-    df = pd.DataFrame({'pca_1': pca_1, 'pca_2': pca_2, 'label': labels, 'genre': input_pca_data['genre']})
+    df = pd.DataFrame({'pca_1': pca_1, 'pca_2': pca_2, 'label': labels, 'genre': gen})
     groups = df.groupby('label')
 
     fig, ax = plt.subplots(figsize=(20, 13))
 
+    plt.style.use('fivethirtyeight')
+    markers = ['s', 'o', 'v', '<', '>', 'P', '*', 'h', 'd', '8']
     for genre, group in groups:
-        if plot_centroids:
-            plt.scatter(centroids_x, centroids_y, c='black', s=200, marker='x')
-        ax.plot(group.pca_1, group.pca_2, marker='o', linestyle='', ms=6, color=colors[genre], label=genres[genre],
-                mec='none', alpha=0.2)
+        ax.plot(group.pca_1, group.pca_2, marker=markers[genre], linestyle='', ms=10, color=colors[genre],
+                label=genres[genre], mec='none', alpha=0.2)
         ax.set_aspect('auto')
         ax.tick_params(axis='x', which='both', bottom='off', top='off', labelbottom='off')
         ax.tick_params(axis='y', which='both', left='off', top='off', labelleft='off')
+        if plot_centroids:
+            plt.plot(centroids_value[:, 0], centroids_value[:, 1], 'k*', ms=14)
 
     ax.legend()
     ax.set_title("Genres Music Clusters Results", fontsize=apr_constants.TITLE_FONT_SIZE)

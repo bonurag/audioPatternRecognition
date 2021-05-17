@@ -54,40 +54,62 @@ def load_data(data_path, normalization='std', remove_null_value=True, columns_to
     return x, y, df
 
 
-def get_pca_var_ratio_plot(input_data, variance_ratio=0.8, save_plot=True, file_name=apr_constants.DEFAULT_FILE_NAME,
+def get_pca_var_ratio_plot(input_data, variance_ratio=0.8, save_plot=True, view_plot=True,
+                           file_name=apr_constants.DEFAULT_FILE_NAME,
                            save_path=apr_constants.PROJECT_ROOT):
     cov_mat = np.cov(input_data.T)
-    eigen_vals, eigen_vecs = np.linalg.eig(cov_mat)
-    tot = sum(eigen_vals)
+    eigen_values, eigen_vectors = np.linalg.eig(cov_mat)
+    tot = sum(eigen_values)
 
     # var_exp ratio is fraction of eigen_val to total sum
-    var_exp = [(i / tot) for i in sorted(eigen_vals, reverse=True)]
+    var_exp = [(i / tot) for i in sorted(eigen_values, reverse=True)]
 
     # calculate the cumulative sum of explained variances
     cum_var_exp = np.cumsum(var_exp)
-    plt.figure(figsize=(15, 10))
-    plt.bar(range(1, len(input_data.columns) + 1), var_exp, alpha=0.75, align='center',
-            label='individual explained variance')
-    plt.xticks(np.arange(1, len(input_data.columns) + 1, 1))
-    plt.step(range(1, len(input_data.columns) + 1), cum_var_exp, where='mid', label='cumulative explained variance',
-             c='red')
 
     # take the first occurrence of number of components for a specific value of variance #
     temp_variance_components = next(
         cum_var_exp[0] for cum_var_exp in enumerate(cum_var_exp) if cum_var_exp[1] > variance_ratio)
     first_occurrence_comp_spec_var = int(temp_variance_components) + 1
-    print('first_occurrence_comp_spec_var: ', first_occurrence_comp_spec_var)
+    # print('first_occurrence_comp_spec_var: ', first_occurrence_comp_spec_var)
 
-    plt.ylim(0, 1.1)
-    plt.xlabel('Principal Components', fontsize=22)
-    plt.ylabel('Explained variance ratio', fontsize=22)
-    plt.legend(loc='best', prop={'size': apr_constants.LEGEND_SIZE})
+    if view_plot:
+        plt.figure(figsize=(15, 10))
+        plt.bar(range(1, len(input_data.columns) + 1), var_exp, alpha=0.75, align='center',
+                label='individual explained variance')
+        plt.xticks(np.arange(1, len(input_data.columns) + 1, 1))
+        plt.step(range(1, len(input_data.columns) + 1), cum_var_exp, where='mid', label='cumulative explained variance',
+                 c='red')
+        plt.ylim(0, 1.1)
+        plt.xlabel('Principal Components', fontsize=22)
+        plt.ylabel('Explained variance ratio', fontsize=22)
+        plt.legend(loc='best', prop={'size': apr_constants.LEGEND_SIZE})
+        plt.show()
+
     if save_plot:
         print('Save PCA Variance Ratio Plot')
         common_functions.check_create_directory(save_path)
         plt.savefig(save_path + file_name + ' - ' + 'PCA Variance Ratio Plot.jpg')
-    plt.show()
     return first_occurrence_comp_spec_var
+
+
+def get_pca(input_pca_data, num_of_components=1):
+    use_pca_data = input_pca_data.copy()
+    if num_of_components > 1:
+        columns_components = []
+        for col in range(num_of_components):
+            columns_components.append('PC' + str(col + 1))
+    elif num_of_components == 1:
+        columns_components = ['PC1']
+
+    # PCA Components #
+    pca = PCA(n_components=num_of_components)
+    pca_fit = pca.fit(use_pca_data)
+    principal_components = pca_fit.transform(use_pca_data)
+    pca_df = pd.DataFrame(data=principal_components, columns=columns_components)
+
+    variance_ratio = pca.explained_variance_ratio_.sum()
+    return pca_df, variance_ratio
 
 
 def get_pca_with_centroids(input_data, input_columns, num_of_components=1, plot_matrix=True, type_plot='2D',
