@@ -145,13 +145,13 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
 if __name__ == "__main__":
     check_new_feature_extractions = input('Would you like to start another session of feature extraction? [Y/N]: ')
     if check_new_feature_extractions.upper() == 'Y':
-        export_file_name = featuresToCsv.extract_features(apr_constants.FEATURES_DATASET_PATH,
-                                                          apr_constants.FEATURES_EXCLUDE_FOLDER,
-                                                          apr_constants.FEATURES_SAVE_ROOT,
-                                                          apr_constants.FEATURES_MFCC_VALUE,
-                                                          apr_constants.FEATURES_SAMPLE_DURATION)
+        featuresToCsv.extract_features(apr_constants.FEATURES_DATASET_PATH,
+                                       apr_constants.FEATURES_EXCLUDE_FOLDER,
+                                       apr_constants.FEATURES_SAVE_ROOT,
+                                       apr_constants.FEATURES_MFCC_VALUE,
+                                       apr_constants.FEATURES_SAMPLE_DURATION)
 
-        dataset_path = apr_constants.FEATURES_SAVE_ROOT+export_file_name
+        dataset_path = apr_constants.FEATURES_SAVE_ROOT
         start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='UL')
     elif check_new_feature_extractions.upper() == 'N':
         start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='UL')

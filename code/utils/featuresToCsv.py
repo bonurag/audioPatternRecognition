@@ -81,7 +81,7 @@ def extract_features(dataset_path=None, exclude_folders_name={}, save_root_path=
             elif check_overwrite.upper() == 'N':
                 execution_time = time.time() - start_time
                 print('Execution Time: ', execution_time)
-    return file_name
+
 
 if __name__ == "__main__":
     extract_features(apr_constants.FEATURES_DATASET_PATH,
