@@ -4,6 +4,7 @@ import apr_constants
 import common_functions
 import plot_functions
 import os
+from utils import featuresToCsv
 
 dataset_path = apr_constants.DATASET_PATH
 
@@ -49,10 +50,11 @@ def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_f
     # Get PCA and Plot
     if type_plot == '2D':
         pca_data, pca_centroids = apr_functions_ul.get_pca_with_centroids(x, y, pca_components_to_use, True, type_plot,
-                                                                       True,
-                                                                       common_functions.get_genres(), image_file_name,
-                                                                       save_path,
-                                                                       centroids)
+                                                                          True,
+                                                                          common_functions.get_genres(),
+                                                                          image_file_name,
+                                                                          save_path,
+                                                                          centroids)
 
         # Get Clusters Plot
         plot_functions.plot_clusters(pca_data[['PC1', 'PC2', 'genre']], pca_centroids, labels,
@@ -61,10 +63,11 @@ def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_f
 
     elif type_plot == '3D':
         pca_data, pca_centroids = apr_functions_ul.get_pca_with_centroids(x, y, pca_components_to_use, True, type_plot,
-                                                                       True,
-                                                                       common_functions.get_genres(), image_file_name,
-                                                                       save_path,
-                                                                       centroids)
+                                                                          True,
+                                                                          common_functions.get_genres(),
+                                                                          image_file_name,
+                                                                          save_path,
+                                                                          centroids)
 
         # Get Clusters Plot
         plot_functions.plot_clusters(pca_data[['PC1', 'PC2', 'genre']], pca_centroids, labels,
@@ -73,7 +76,7 @@ def init_data_and_model_ul(input_file_path, features_to_drop, type_plot, image_f
 
     # Get K-means Confusion Matrix Plot
     plot_functions.plot_confusion_matrix_k_means(df, True, labels, common_functions.get_genres(), image_file_name,
-                                                save_path)
+                                                 save_path)
 
     # Get K-means Classification Report
     plot_functions.plot_classification_report(df, True, labels, common_functions.get_genres(), image_file_name,
@@ -140,4 +143,15 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
 
 
 if __name__ == "__main__":
-    start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='SL')
+    check_new_feature_extractions = input('Would you like to start another session of feature extraction? [Y/N]: ')
+    if check_new_feature_extractions.upper() == 'Y':
+        export_file_name = featuresToCsv.extract_features(apr_constants.FEATURES_DATASET_PATH,
+                                                          apr_constants.FEATURES_EXCLUDE_FOLDER,
+                                                          apr_constants.FEATURES_SAVE_ROOT,
+                                                          apr_constants.FEATURES_MFCC_VALUE,
+                                                          apr_constants.FEATURES_SAMPLE_DURATION)
+
+        dataset_path = apr_constants.FEATURES_SAVE_ROOT+export_file_name
+        start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='UL')
+    elif check_new_feature_extractions.upper() == 'N':
+        start_evaluation(dataset_path, drop_time_features=[], drop_frequency_features=[], type_learning='UL')
