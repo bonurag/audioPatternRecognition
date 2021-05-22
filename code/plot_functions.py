@@ -155,7 +155,7 @@ def plot_silhouette(input_data, min_clusters=2, max_clutsers=5, save_plot=False,
                     save_path=apr_constants.PROJECT_ROOT):
     eval_data = input_data.copy()
     silhouette_score_values = list()
-    executiontime_values = list()
+    execution_time_values = list()
 
     number_of_clusters = range(min_clusters, max_clutsers + 1)
     for i in number_of_clusters:
@@ -164,7 +164,7 @@ def plot_silhouette(input_data, min_clusters=2, max_clutsers=5, save_plot=False,
         clusters.fit(eval_data)
         cluster_labels = clusters.predict(eval_data)
         execution_time = time.time() - start_time
-        executiontime_values.append(execution_time)
+        execution_time_values.append(execution_time)
         silhouette_score_values.append(
             metrics.silhouette_score(eval_data, cluster_labels, metric='euclidean', sample_size=None,
                                      random_state=None))
@@ -183,9 +183,9 @@ def plot_silhouette(input_data, min_clusters=2, max_clutsers=5, save_plot=False,
     ax1.grid(False)
 
     ax2 = ax1.twinx()
-    y_ax2_ticks = np.arange(0, max(executiontime_values) + 1, 0.3)
-    ax2.plot(number_of_clusters, executiontime_values, 'orange', linestyle='dashed')
-    ax2.plot(number_of_clusters, executiontime_values, 'orange', marker="o", linestyle='dashed')
+    y_ax2_ticks = np.arange(0, max(execution_time_values) + 1, 0.3)
+    ax2.plot(number_of_clusters, execution_time_values, 'orange', linestyle='dashed')
+    ax2.plot(number_of_clusters, execution_time_values, 'orange', marker="o", linestyle='dashed')
     ax2.set_yticks(y_ax2_ticks)
     ax2.set_ylabel('Fit Time (sec)', fontsize=22)
     ax2.grid(False)
@@ -193,8 +193,8 @@ def plot_silhouette(input_data, min_clusters=2, max_clutsers=5, save_plot=False,
     optimal_number_of_components = number_of_clusters[silhouette_score_values.index(max(silhouette_score_values))]
     worst_number_of_components = number_of_clusters[silhouette_score_values.index(min(silhouette_score_values))]
 
-    # optimal_execution_time = number_of_clusters[executiontime_values.index(max(executiontime_values))]
-    # worst_execution_time = number_of_clusters[executiontime_values.index(min(executiontime_values))]
+    # optimal_execution_time = number_of_clusters[execution_time_values.index(max(execution_time_values))]
+    # worst_execution_time = number_of_clusters[execution_time_values.index(min(execution_time_values))]
 
     plt.rcParams.update({'font.size': 12})
     for i in silhouette_score_values:
@@ -213,16 +213,16 @@ def plot_silhouette(input_data, min_clusters=2, max_clutsers=5, save_plot=False,
         else:
             ax1.annotate(str(round(i, 3)), xy=(value_position + 2, i + sil_y_offset_value), color=clr, weight=wgt)
 
-    for j in executiontime_values:
+    for j in execution_time_values:
         clr = 'black'
         wgt = 'normal'
-        value_time_position = executiontime_values.index(j)
+        value_time_position = execution_time_values.index(j)
         time_y_offset_value = 0.06
-        if max(executiontime_values) == j:
+        if max(execution_time_values) == j:
             wgt = 'bold'
             clr = 'red'
             ax2.annotate(str(round(j, 3)), xy=(value_time_position + 2, j - time_y_offset_value), color=clr, weight=wgt)
-        elif min(executiontime_values) == j:
+        elif min(execution_time_values) == j:
             wgt = 'bold'
             clr = 'green'
             ax2.annotate(str(round(j, 3)), xy=(value_time_position + 2, j - time_y_offset_value), color=clr, weight=wgt)
@@ -382,7 +382,7 @@ def plot_predictions_compare(normalize_cm, y_test, y_pred, target_names=None,
                             size=15, xytext=(0, 8), textcoords='offset points', fontsize=8, rotation=90)
 
     if save_plot:
-        print('Save Model Predictions Compare')
+        print('Save Plot Predictions Compare')
         common_functions.check_create_directory(save_path)
         plt.savefig(save_path + file_name + ' - ' + 'Predictions Compare Plot.jpg')
     plt.show()

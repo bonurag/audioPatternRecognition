@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 
 import time
@@ -125,8 +123,7 @@ def model_assess(clf, x_train, x_test, y_train, y_test, plot_roc=True, plot_conf
     y_pred = clf.predict(x_test)
     y_proba = clf.predict_proba(x_test)
 
-    if not os.path.exists(save_path + apr_constants.MODEL):
-        os.makedirs(save_path + apr_constants.MODEL)
+    common_functions.check_create_directory(save_path + apr_constants.MODEL)
     common_functions.save_model(clf, save_path + apr_constants.MODEL + file_name)
     # print()
     if plot_conf_matrix:
@@ -228,15 +225,13 @@ def get_results(classifier_models, x_train, x_test, y_train, y_test, export_csv=
     results_reports = pd.DataFrame.from_dict(all_models_reports)
     # print('results_reports: ', results_reports)
     if export_csv:
-        if not os.path.exists(save_path + apr_constants.DATA):
-            os.makedirs(save_path + apr_constants.DATA)
+        common_functions.check_create_directory(save_path + apr_constants.DATA)
         results.to_csv(save_path + apr_constants.DATA + file_name + '_results.csv', index=False, header=True, sep='\t',
                        encoding='utf-8')
         results_reports.to_csv(save_path + apr_constants.DATA + file_name + '_reports_results.csv', index=False,
                                header=True, sep='\t', encoding='utf-8')
     if export_json:
-        if not os.path.exists(save_path + apr_constants.DATA):
-            os.makedirs(save_path + apr_constants.DATA)
+        common_functions.check_create_directory(save_path + apr_constants.DATA)
         with open(save_path + apr_constants.DATA + file_name + '_results.json', 'w') as res:
             json.dump(all_models_results, res, indent=4)
         with open(save_path + apr_constants.DATA + file_name + '_reports_results.json', 'w') as rep:

@@ -13,7 +13,7 @@ LEGEND_SIZE = 16
 DEFAULT_FILE_NAME = 'Default File Name'
 DEFAULT_CLASSIFIER_NAME = 'Default Classifier Name'
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))+'/'
 GENRES = '10'
 FEATURES_FILE_PATH = 'genres_' + GENRES
 DATASET_PATH = 'feature_csv/data/'

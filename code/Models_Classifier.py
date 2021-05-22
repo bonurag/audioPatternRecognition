@@ -117,14 +117,14 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
         mfcc_value = file_name[0:2]
 
         save_path = apr_constants.ROOT_SAVE_PATH
-
+        print('start_evaluation: ', save_path)
         if drop_time_features_check:
             result_folder = apr_constants.RESULTS_ALL_FEATURES if len(
                 features_to_drop) == 0 else apr_constants.RESULTS_FREQUENCY_DOMAIN_FEATURES
-            if type_learning == 'SL':
+            if type_learning.upper() == 'SL':
                 save_path += apr_constants.SUPERVISED_LEARNING + str(result_folder) + str(mfcc_value) + '/'
                 init_data_and_model_sl(file_path, features_to_drop, image_file_name, save_path)
-            elif type_learning == 'UL':
+            elif type_learning.upper() == 'UL':
                 save_path += apr_constants.UNSUPERVISED_LEARNING + str(result_folder) + str(mfcc_value) + '/'
                 init_data_and_model_ul(file_path, features_to_drop, ul_type_plot, image_file_name, save_path)
         else:
@@ -132,11 +132,11 @@ def start_evaluation(input_dataset_path, drop_time_features=[], drop_frequency_f
                 for num_mfcc in range(int(mfcc_value)):
                     features_to_drop.append('mfcc_' + str(num_mfcc))
             image_file_name = image_file_name.replace(str(mfcc_value) + 'MFCC_', '')
-            if type_learning == 'SL':
+            if type_learning.upper() == 'SL':
                 save_path += apr_constants.SUPERVISED_LEARNING + apr_constants.RESULTS_TIME_DOMAIN_FEATURES
                 init_data_and_model_sl(file_path, features_to_drop, image_file_name, save_path)
                 break
-            elif type_learning == 'UL':
+            elif type_learning.upper() == 'UL':
                 save_path += apr_constants.UNSUPERVISED_LEARNING + apr_constants.RESULTS_TIME_DOMAIN_FEATURES
                 init_data_and_model_ul(file_path, features_to_drop, ul_type_plot, image_file_name, save_path)
                 break

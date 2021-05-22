@@ -87,12 +87,12 @@ def get_pca_var_ratio_plot(input_data, variance_ratio=0.8, save_plot=True, view_
         plt.xlabel('Principal Components', fontsize=22)
         plt.ylabel('Explained variance ratio', fontsize=22)
         plt.legend(loc='best', prop={'size': apr_constants.LEGEND_SIZE})
-        plt.show()
 
     if save_plot:
         print('Save PCA Variance Ratio Plot')
         common_functions.check_create_directory(save_path)
         plt.savefig(save_path + file_name + ' - ' + 'PCA Variance Ratio Plot.jpg')
+        plt.show()
     return first_occurrence_comp_spec_var
 
 
@@ -158,17 +158,17 @@ def get_pca_with_centroids(input_data, input_columns, num_of_components=1, plot_
         return concat_data, c_transformed
 
 
-def run_k_means(input_data, clusters_number=1, random_state=10, save_model=True,
-                model_file_name=apr_constants.DEFAULT_FILE_NAME,
+def run_k_means(input_data, clusters_number=1, random_state=10, model_file_name=apr_constants.DEFAULT_FILE_NAME,
                 save_path=apr_constants.PROJECT_ROOT):
     k_means = KMeans(clusters_number, random_state=random_state)
     k_means.fit(input_data)
     labels = k_means.labels_
     centroids = k_means.cluster_centers_
     predict_clusters = k_means.predict(input_data)
-    if save_model:
-        common_functions.check_create_directory(save_path + apr_constants.MODEL)
-        common_functions.save_model(k_means, save_path + apr_constants.MODEL + model_file_name)
+
+    common_functions.check_create_directory(save_path + apr_constants.MODEL)
+    common_functions.save_model(k_means, save_path + apr_constants.MODEL + model_file_name)
+
     return labels, predict_clusters, centroids, k_means
 
 

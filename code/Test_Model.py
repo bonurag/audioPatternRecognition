@@ -58,8 +58,7 @@ if __name__ == "__main__":
     plot_functions.plot_predictions_simple_compare(visual_data, common_functions.get_genres(),
                                                    True, 'Simple Test Model Evaluation', SAVE_ROOT + apr_constants.PLOT)
 
-    if not os.path.exists(SAVE_ROOT + apr_constants.DATA):
-        os.makedirs(SAVE_ROOT + apr_constants.DATA)
+    common_functions.check_create_directory(SAVE_ROOT + apr_constants.DATA)
     data.to_csv(SAVE_ROOT + apr_constants.DATA + FILE_NAME, index=False)
     visual_data.to_csv(SAVE_ROOT + apr_constants.DATA + FILE_NAME_COUNT, index=False)
     executionTime = time.time() - start_time

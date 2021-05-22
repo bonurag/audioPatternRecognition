@@ -11,14 +11,14 @@ import apr_constants
 features_file_path = apr_constants.FEATURES_FILE_PATH
 
 
-def get_genres():
-    genre_target_names = []
-    for folder in os.listdir(os.path.join(features_file_path)):
-        genre_target_names.append(str(folder))
-
-    if len(genre_target_names) == 0:
-        genre_target_names = apr_constants.GENRE_TARGET_NAMES
-    return genre_target_names
+def get_genres(features_file_path=None):
+    if features_file_path is None or len(features_file_path) == 0:
+        return apr_constants.GENRE_TARGET_NAMES
+    else:
+        genre_target_names = []
+        for folder in os.listdir(os.path.join(features_file_path)):
+            genre_target_names.append(str(folder))
+        return genre_target_names
 
 
 def save_model(input_classifier, save_model_name):
