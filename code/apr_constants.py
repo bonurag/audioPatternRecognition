@@ -30,14 +30,17 @@ PLOT = 'Plot/'
 SUPERVISED_LEARNING = 'Supervised_Learning/'
 UNSUPERVISED_LEARNING = 'Unsupervised_Learning/'
 
-ROOT_SAVE_PATH = 'export_results/'
+ROOT_SAVE_PATH = 'export_results/v2/'
 ROOT_SAVE_PATH_TEST_MODEL = 'test_model/'
 ROOT_SAVE_PATH_NOTEBOOKS = 'Notebooks_Results/'
 
 # Constants and Path definitions for feature extraction utils
 
-FEATURES_DATASET_PATH = 'genres_collections_new'
+FEATURES_DATASET_PATH = 'genres_10'
 FEATURES_EXCLUDE_FOLDER = {'results'}
 FEATURES_SAVE_ROOT = FEATURES_DATASET_PATH + '/results/'
-FEATURES_MFCC_VALUE = 13
-FEATURES_SAMPLE_DURATION = 30
+FEATURES_MFCC_VALUE = 40
+FEATURES_SAMPLE_DURATION = 3
+
+WIN_LENGTH = 1024
+HOP_LENGTH = 512

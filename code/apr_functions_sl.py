@@ -176,20 +176,34 @@ def get_model(test_model=False):
         classifier_models.update({'ANN': ANN_Classifier})
 
     else:
-        # Linear Support Vector Machine
-        SVM_Classifier = SVC(C=100, kernel='rbf', probability=True, random_state=10)
+        # Linear Support Vector Machine Version 1
+        # SVM_Classifier = SVC(C=100, kernel='rbf', probability=True, random_state=10)
+
+        # Linear Support Vector Machine Version 2
+        SVM_Classifier = SVC(C=150, kernel='rbf', probability=True, random_state=10)
         classifier_models.update({'SVM': SVM_Classifier})
 
-        # Random Forest
-        RF_Classifier = RandomForestClassifier(n_estimators=1000, random_state=10)
+        # Random Forest Version 1
+        # RF_Classifier = RandomForestClassifier(n_estimators=1000, random_state=10)
+
+        # Random Forest Version 2
+        RF_Classifier = RandomForestClassifier(n_estimators=1000, criterion='gini', bootstrap=True, oob_score=True,
+                                               random_state=15,
+                                               verbose=1, n_jobs=-1)
         classifier_models.update({'RF': RF_Classifier})
 
-        # Artificial Neural Network
-        ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
-                                       hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
-                                       random_state=1, activation='relu', learning_rate='adaptive',
-                                       early_stopping=False,
-                                       verbose=False, max_iter=2000)
+        # Artificial Neural Network Version 1
+        # ANN_Classifier = MLPClassifier(solver='adam', alpha=1e-5,
+        #                                hidden_layer_sizes=(512, 256, 128, 128, 128, 128, 64, 64, 32, 32),
+        #                                random_state=1, activation='relu', learning_rate='adaptive',
+        #                                early_stopping=False,
+        #                                verbose=False, max_iter=2000)
+
+        # Artificial Neural Network Version 2
+        ANN_Classifier = MLPClassifier(hidden_layer_sizes=(256, 128, 128, 64, 64, 32), learning_rate_init=0.001,
+                                       activation='relu', solver='adam', max_iter=500, learning_rate='adaptive',
+                                       verbose=False, n_iter_no_change=20)
+
         classifier_models.update({'ANN': ANN_Classifier})
     return classifier_models
 

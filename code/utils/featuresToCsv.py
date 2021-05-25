@@ -1,3 +1,4 @@
+import math
 import time
 import librosa.display
 import numpy as np
@@ -43,15 +44,15 @@ def extract_features(dataset_path=None, exclude_folders_name={}, save_root_path=
                     if int(duration) == sample_duration:
                         row['tempo'] = np.mean(librosa.beat.tempo(audio, sr=sr))
                         row['energy'] = np.mean(features_functions.energy(audio))
-                        row['energy_entropy'] = np.mean(features_functions.energy_entropy(audio, n_short_blocks=5))
-                        row['rmse'] = np.mean(librosa.feature.rms(audio))
-                        row['chroma_stft'] = np.mean(librosa.feature.chroma_stft(audio, sr=sr))
+                        row['energy_entropy'] = np.mean(features_functions.energy_entropy(audio, n_short_blocks=math.ceil(len(audio)/apr_constants.WIN_LENGTH)))
+                        row['rmse'] = np.mean(librosa.feature.rms(audio, frame_length=apr_constants.WIN_LENGTH))
+                        row['chroma_stft'] = np.mean(librosa.feature.chroma_stft(audio, sr=sr, win_length=apr_constants.WIN_LENGTH, hop_length=apr_constants.HOP_LENGTH))
                         row['chroma_cqt'] = np.mean(librosa.feature.chroma_cqt(audio, sr=sr))
                         row['chroma_cens'] = np.mean(librosa.feature.chroma_cens(audio, sr=sr))
-                        row['spec_cent'] = np.mean(librosa.feature.spectral_centroid(audio, sr=sr))
-                        row['spec_bw'] = np.mean(librosa.feature.spectral_bandwidth(audio, sr=sr))
-                        row['spec_contrast'] = np.mean(librosa.feature.spectral_contrast(audio, sr=sr))
-                        row['rolloff'] = np.mean(librosa.feature.spectral_rolloff(audio, sr=sr))
+                        row['spec_cent'] = np.mean(librosa.feature.spectral_centroid(audio, sr=sr, win_length=apr_constants.WIN_LENGTH, hop_length=apr_constants.HOP_LENGTH))
+                        row['spec_bw'] = np.mean(librosa.feature.spectral_bandwidth(audio, sr=sr, win_length=apr_constants.WIN_LENGTH, hop_length=apr_constants.HOP_LENGTH))
+                        row['spec_contrast'] = np.mean(librosa.feature.spectral_contrast(audio, sr=sr, win_length=apr_constants.WIN_LENGTH, hop_length=apr_constants.HOP_LENGTH))
+                        row['rolloff'] = np.mean(librosa.feature.spectral_rolloff(audio, sr=sr, win_length=apr_constants.WIN_LENGTH, hop_length=apr_constants.HOP_LENGTH))
                         row['zcr'] = np.mean(librosa.feature.zero_crossing_rate(audio))
 
                         for x, j in zip(librosa.feature.mfcc(audio, sr=sr, n_mfcc=mfcc_value)[:mfcc_value],
