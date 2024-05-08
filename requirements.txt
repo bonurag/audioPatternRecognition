@@ -2,7 +2,7 @@ pandas==1.1.5
 matplotlib==3.3.3
 librosa==0.8.0
 numpy==1.22
-tqdm==4.56.0
+tqdm>=4.66.3
 pydub==0.25.1
-scikit-learn==0.24.1
+scikit-learn>=1.0.1
 seaborn==0.11.1
